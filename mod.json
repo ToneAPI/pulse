@@ -2,5 +2,19 @@
     "Name": "ToneAPI.pulse",
     "Description": "placeholder text",
     "Version": "0.0.1",
-    "LoadPriority": 2
+    "LoadPriority": 1,
+    "Scripts": [
+        {
+        "Path": "pulse.gnut",
+        "RunOn": "CLIENT",
+        "ClientCallback": {
+            "After": "GetStatsFromToneAPI"
+        }
+        }
+    ],
+    "ConVars": [
+        {
+            "ToneURL": "https://tone.sleepycat.date/v1"
+        }
+    ]
 }

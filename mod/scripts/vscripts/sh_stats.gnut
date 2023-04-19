@@ -9,6 +9,7 @@ global function GetStatVarType
 global function GetStatVarLocalizedUnlock
 global function Stats_GetFixedSaveVar
 global function FD_GetHighestDifficultyForTitan
+global table <string, int> globalToneAPIKillData = {}
 
 /*void function AddItemsToStatsList( array<string> refs )
 {
@@ -456,8 +457,10 @@ string function GetStatVarLocalizedUnlock( string category, string alias, string
 int function GetPlayerStatInt( entity player, string category, string alias, string subAlias = "" )
 {
 	Assert( IsUI() || IsValid( player ) )
-
 	string statString = GetStatVar( category, alias, subAlias )
+	foreach (string key, int value in globalToneAPIKillData) {
+		if(statString == "weaponKillStats[" + key + "].total") return value
+	}
 	return player.GetPersistentVarAsInt( statString )
 }
 

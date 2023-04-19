@@ -1,0 +1,20 @@
+global function GetStatsFromToneAPI
+
+table JSONForConversion = {}
+
+void function GetStatsFromToneAPI()
+{
+    HttpRequest getStats
+    getStats.method = HttpRequestMethod.GET
+    getStats.url = GetConVarString("ToneURL") + "/client/weapons"
+    getStats.queryParameters["player"] <- [NSGetLocalPlayerUID().tostring()]
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        JSONForConversion = DecodeJSON(response.body)
+        foreach (key, value in JSONForConversion) {
+            globalToneAPIKillData[string(key)] <- int(value)
+        }
+    }
+    bool result = NSHttpRequest(getStats, onSuccess)
+    return result
+}
