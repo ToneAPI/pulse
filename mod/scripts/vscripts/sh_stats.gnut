@@ -458,9 +458,9 @@ int function GetPlayerStatInt( entity player, string category, string alias, str
 {
 	Assert( IsUI() || IsValid( player ) )
 	string statString = GetStatVar( category, alias, subAlias )
-	foreach (string key, int value in globalToneAPIKillData) {
-		if(statString == "weaponKillStats[" + key + "].total") return value
-	}
+    foreach (string key, int value in globalToneAPIKillData) {
+        if(statString == "weaponKillStats[mp_weapon" + key + "].total") return value
+    }
 	return player.GetPersistentVarAsInt( statString )
 }
 

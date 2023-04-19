@@ -11,10 +11,5 @@
             "After": "GetStatsFromToneAPI"
         }
         }
-    ],
-    "ConVars": [
-        {
-            "ToneURL": "https://tone.sleepycat.date/v1"
-        }
     ]
 }

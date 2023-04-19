@@ -6,7 +6,7 @@ void function GetStatsFromToneAPI()
 {
     HttpRequest getStats
     getStats.method = HttpRequestMethod.GET
-    getStats.url = GetConVarString("ToneURL") + "/client/weapons"
+    getStats.url = "https://tone.sleepycat.date/v1/client/weapons"
     getStats.queryParameters["player"] <- [NSGetLocalPlayerUID().tostring()]
     void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
     {
@@ -16,5 +16,4 @@ void function GetStatsFromToneAPI()
         }
     }
     bool result = NSHttpRequest(getStats, onSuccess)
-    return result
 }
