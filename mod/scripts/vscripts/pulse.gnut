@@ -37,7 +37,8 @@ void function GetStatsFromToneAPI()
 int function getWeaponKillsFromToneApi(string weaponRef){
 
     //Sliced names are to be removed afterwards
-	if(weaponRef.find("mp_weapon") > -1){
+	print("[PULSE]" + weaponRef)
+    if(weaponRef.find("mp_weapon") != null){
 		weaponRef = weaponRef.slice(10)
 	}
 
