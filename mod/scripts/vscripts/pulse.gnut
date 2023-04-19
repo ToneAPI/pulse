@@ -1,20 +1,54 @@
 global function GetStatsFromToneAPI
+global function getWeaponKillsFromToneApi
 
-table JSONForConversion = {}
+table globalToneAPIKillData = {}
 
 void function GetStatsFromToneAPI()
 {
+    //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v1")
+    print("[PULSE] Pulse Loaded")
     HttpRequest getStats
     getStats.method = HttpRequestMethod.GET
-    getStats.url = GetConVarString("ToneURL") + "/client/weapons"
+    getStats.url = "https://tone.sleepycat.date/v1" + "/client/weapons"
     getStats.queryParameters["player"] <- [NSGetLocalPlayerUID().tostring()]
     void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
     {
-        JSONForConversion = DecodeJSON(response.body)
-        foreach (key, value in JSONForConversion) {
-            globalToneAPIKillData[string(key)] <- int(value)
+        print("[PULSE] Recieved kill data")
+        table JSONForConversion = DecodeJSON(response.body)
+        foreach (var key, var value in JSONForConversion) {
+            table test = expect table(value)
+            //this won't work on v2 since kills will be an integer already
+            string kills = expect string(test.kills)
+            globalToneAPIKillData[string(key)] <- kills.tointeger()
+            print("[PULSE] " + key + " added")
         }
+        print("[PULSE] kill data processed")
     }
-    bool result = NSHttpRequest(getStats, onSuccess)
-    return result
+
+    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        print("[PULSE] Encountered some error getting kill data...")
+    }
+
+    bool result = NSHttpRequest(getStats, onSuccess, onFailure)
+    print("[PULSE] result is " + result)
+}
+
+int function getWeaponKillsFromToneApi(string weaponRef){
+
+    //Sliced names are to be removed afterwards
+	if(weaponRef.find("mp_weapon") > -1){
+		weaponRef = weaponRef.slice(10)
+	}
+
+    foreach (var key, var value in globalToneAPIKillData) {
+        print(key)
+        print(value)
+    }
+    if(weaponRef in globalToneAPIKillData){
+        print("found!")
+        print(globalToneAPIKillData[weaponRef])
+        return expect int(globalToneAPIKillData[weaponRef])
+    }
+    return 0
 }

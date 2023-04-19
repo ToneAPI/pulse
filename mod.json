@@ -6,8 +6,8 @@
     "Scripts": [
         {
         "Path": "pulse.gnut",
-        "RunOn": "CLIENT",
-        "ClientCallback": {
+        "RunOn": "UI",
+        "UICallback": {
             "After": "GetStatsFromToneAPI"
         }
         }
