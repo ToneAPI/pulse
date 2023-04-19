@@ -1,6 +1,5 @@
-# Pulse
-## This repository is currently W.I.P.
-Pulse is (or, will be someday) a clientside Titanfall 2 mod that allows players to view statistics saved in the Tone API using the currently nonfunctional `Stats` tab.
+# Pulse - Development Branch
 
-Currently to do:
-- the entire repository
+This repository is only for us throwing braincells at code and trying to make it work.
+
+Please go back to [the main branch](https://github.com/ToneAPI/pulse/tree/main).
