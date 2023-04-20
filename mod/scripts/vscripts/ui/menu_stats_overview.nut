@@ -311,22 +311,10 @@ function UpdateViewStatsOverviewMenu()
 	SetStatsLabelValue( file.menu, "Last10GamesPVPValue", [ "#STATS_KD_VALUE", kdratiopvp_match_average ] )
 	PlotKDPointsOnGraph( file.menu, 1, kdratiopvp_match, lifetimeAveragePVP )
 
-	int totalPilotKills = 0
+	var totalPilotKills = 0
 	
-	array<ItemDisplayData> allWeapons = []
-
-	allWeapons.extend( GetVisibleItemsOfType( eItemTypes.PILOT_PRIMARY ) )
-	allWeapons.extend( GetVisibleItemsOfType( eItemTypes.PILOT_SECONDARY ) )
-	allWeapons.extend( GetVisibleItemsOfType( eItemTypes.TITAN_PRIMARY ) )
-	allWeapons.extend( GetVisibleItemsOfType( eItemTypes.TITAN_ORDNANCE ) )
-	allWeapons.extend( GetVisibleItemsOfType( eItemTypes.TITAN_ANTIRODEO ) )
-	allWeapons.extend( GetVisibleItemsOfType( eItemTypes.TITAN_SPECIAL ) )
-
-	foreach (weapon in allWeapons) {
-		string weaponName = weapon.ref
-		print(weaponName)
-		totalPilotKills += getWeaponKillsFromToneApi(weapon.ref)
-		print(totalPilotKills)
+	foreach (var key, var value in globalToneAPIKillData) {
+		totalPilotKills += value
 	}
 
 	/////////////////////////

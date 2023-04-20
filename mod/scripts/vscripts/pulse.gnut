@@ -1,7 +1,7 @@
 global function GetStatsFromToneAPI
 global function getWeaponKillsFromToneApi
 
-table globalToneAPIKillData = {}
+global table globalToneAPIKillData = {}
 
 void function GetStatsFromToneAPI()
 {
