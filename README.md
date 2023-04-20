@@ -1,5 +1,6 @@
-# Pulse - Development Branch
+# Pulse
 
-This repository is only for us throwing braincells at code and trying to make it work.
+Pulse is a clientside mod for Titanfall 2 letting you view killstats using the otherwise non-functional `Stats` tab.
 
-Please go back to [the main branch](https://github.com/ToneAPI/pulse/tree/main).
+**DISCLAIMER**
+Pulse only works servers using the Tone API, view a list of them on [the webclient.](https://toneapi.github.io/ToneAPI_webclient/)
