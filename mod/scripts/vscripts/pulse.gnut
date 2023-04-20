@@ -1,0 +1,55 @@
+global function GetStatsFromToneAPI
+global function getWeaponKillsFromToneApi
+
+global table globalToneAPIKillData = {}
+
+void function GetStatsFromToneAPI()
+{
+    //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v1")
+    print("[PULSE] Loaded, getting data...")
+    HttpRequest getStats
+    getStats.method = HttpRequestMethod.GET
+    getStats.url = "https://tone.sleepycat.date/v1/client/weapons"
+    getStats.queryParameters["player"] <- [NSGetLocalPlayerUID().tostring()]
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        print("[PULSE] Kill data received, processing...")
+        table JSONForConversion = DecodeJSON(response.body)
+        foreach (var key, var value in JSONForConversion) {
+            table test = expect table(value)
+            //this won't work on v2 since kills will be an integer already
+            string kills = expect string(test.kills)
+            globalToneAPIKillData[string(key)] <- kills.tointeger()
+            print("[PULSE] " + key + " has been added.")
+        }
+        print("[PULSE] Kill data has been processed.")
+    }
+
+    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        print("[PULSE] Encountered an error getting kill data...")
+    }
+
+    bool result = NSHttpRequest(getStats, onSuccess, onFailure)
+    print("[PULSE] result is " + result)
+}
+
+int function getWeaponKillsFromToneApi(string weaponRef){
+
+    //Sliced names are to be removed afterwards
+	print("[PULSE]" + weaponRef)
+    if(weaponRef.find("mp_weapon") != null){
+		weaponRef = weaponRef.slice(10)
+	}
+
+    foreach (var key, var value in globalToneAPIKillData) {
+        print(key)
+        print(value)
+    }
+    if(weaponRef in globalToneAPIKillData){
+        print("found!")
+        print(globalToneAPIKillData[weaponRef])
+        return expect int(globalToneAPIKillData[weaponRef])
+    }
+    return 0
+}
