@@ -5,6 +5,15 @@ global table globalToneAPIKillData = {}
 
 void function GetStatsFromToneAPI()
 {
+    thread GetStatsFromToneAPI_threaded()
+}
+
+void function GetStatsFromToneAPI_threaded(){
+
+    while(true){
+        if(NSIsMasterServerAuthenticated()) break
+        WaitFrame()
+    }
     //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v1")
     print("[PULSE] Loaded, getting data...")
     HttpRequest getStats
@@ -37,18 +46,13 @@ void function GetStatsFromToneAPI()
 int function getWeaponKillsFromToneApi(string weaponRef){
 
     //Sliced names are to be removed afterwards
-	print("[PULSE]" + weaponRef)
+	//print("[PULSE]" + weaponRef)
     if(weaponRef.find("mp_weapon") != null){
 		weaponRef = weaponRef.slice(10)
 	}
 
-    foreach (var key, var value in globalToneAPIKillData) {
-        print(key)
-        print(value)
-    }
     if(weaponRef in globalToneAPIKillData){
-        print("found!")
-        print(globalToneAPIKillData[weaponRef])
+        print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIKillData[weaponRef] + " kills")
         return expect int(globalToneAPIKillData[weaponRef])
     }
     return 0
