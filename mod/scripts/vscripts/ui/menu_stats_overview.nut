@@ -172,7 +172,7 @@ function UpdateViewStatsOverviewMenu()
 		Hud_Show( weaponImageElem )
 		Hud_SetText( weaponNameElem, nemesisWeapon.printName )
 		Hud_Show( weaponNameElem )
-		Hud_SetText( weaponDescElem, "#STATS_MOST_KILLS_VALUE", nemesisWeapon.val )
+		Hud_SetText( weaponDescElem, nemesisWeapon.val + " DEATHS BY WEAPON" )
 		Hud_Show( weaponDescElem )
 		Hud_Hide( noDataElem )
 	}
