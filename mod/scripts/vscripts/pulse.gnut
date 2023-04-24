@@ -1,9 +1,11 @@
 global function GetStatsFromToneAPI
 global function getWeaponKillsFromToneApi
 global function getNemesisWeaponFromToneAPI
+global function getDWEFromToneAPI
 
 global table globalToneAPIKillData = {}
 global table globalToneAPIDeathData = {}
+global table globalToneAPIDWEData = {}
 
 void function GetStatsFromToneAPI()
 {
@@ -31,6 +33,7 @@ void function GetStatsFromToneAPI_threaded(){
             table test = expect table(value)
             globalToneAPIKillData[string(key)] <- test.kills
             globalToneAPIDeathData[string(key)] <- test.deaths
+            globalToneAPIDWEData[string(key)] <- test.deaths_while_equipped
             print("[PULSE] " + key + " has been added.")
         }
         print("[PULSE] Kill data has been processed.")
@@ -64,9 +67,22 @@ int function getNemesisWeaponFromToneAPI(string weaponRef){
         weaponRef = weaponRef.slice(10)
     }
 
-    if(weaponRef in globalToneAPIKillData){
-        print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIDeathData[weaponRef] + " deaths")
+    if(weaponRef in globalToneAPIDeathData){
+        print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIDeathData[weaponRef] + " nemesis weapon kills")
         return expect int(globalToneAPIDeathData[weaponRef])
+    }
+    return 0
+}
+
+int function getDWEFromToneAPI(string weaponRef){
+
+    if(weaponRef.find("mp_weapon") != null){
+        weaponRef = weaponRef.slice(10)
+    }
+
+    if(weaponRef in globalToneAPIDWEData){
+        print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIDeathData[weaponRef] + " deaths while equipped")
+        return expect int(globalToneAPIDWEData[weaponRef])
     }
     return 0
 }

@@ -354,16 +354,21 @@ table<string, table> function GetOverviewWeaponData()
 			Table[ "nemesis_weapon" ].val = nval
 		}
 
-		local killsPerMinute = 0
-		local hoursEquipped = GetPlayerStatFloat( player, "weapon_stats", "hoursEquipped", weaponName )
-		local killCount = GetPlayerStatInt( player, "weapon_kill_stats", "total", weaponName )
-		if ( hoursEquipped > 0 )
-			killsPerMinute = format( "%.2f", ( killCount / ( hoursEquipped * 60.0 ) ).tofloat() )
-		if ( killsPerMinute.tofloat() > Table[ "highest_kpm" ].val.tofloat() )
+		float kdval = 0
+		float kval = 0
+		float dval = 0
+		if( getWeaponKillsFromToneApi(weaponName) != 0 && getDWEFromToneAPI(weaponName) != 0){
+			kval = float(getWeaponKillsFromToneApi(weaponName))
+			dval = float(getDWEFromToneAPI(weaponName))
+			if (kval / dval > kdval){
+			kdval = float(getWeaponKillsFromToneApi(weaponName) / getDWEFromToneAPI(weaponName))
+			}
+		}
+		if ( kdval > Table[ "highest_kpm" ].val.tofloat() )
 		{
 			Table[ "highest_kpm" ].ref = weaponName
 			Table[ "highest_kpm" ].printName = weaponDisplayName
-			Table[ "highest_kpm" ].val = killsPerMinute
+			Table[ "highest_kpm" ].val = kdval
 		}
 	}
 

@@ -190,7 +190,7 @@ function UpdateViewStatsOverviewMenu()
 		Hud_Show( weaponImageElem )
 		Hud_SetText( weaponNameElem, highestKPMData.printName )
 		Hud_Show( weaponNameElem )
-		Hud_SetText( weaponDescElem, "#STATS_MOST_EFFICIENT_VALUE", highestKPMData.val )
+		Hud_SetText( weaponDescElem, highestKPMData.val + " K/D")
 		Hud_Show( weaponDescElem )
 		Hud_Hide( noDataElem )
 	}
