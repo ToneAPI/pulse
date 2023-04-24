@@ -51,12 +51,19 @@ function UpdateViewStatsOverviewMenu()
 	int timesMVP = GetPlayerStatInt( player, "game_stats", "mvp_total" )
 	int timesTop3 = GetPlayerStat_AllCompetitiveModesAndMapsInt( player, "game_stats", "top3OnTeam" )
 
-	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat0" ), Localize( "#STATS_HEADER_TIME_PLAYED" ), timePlayed )
-	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat1" ), Localize( "#STATS_GAMES_PLAYED" ), 		string( gamesPlayed ) )
-	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat2" ), Localize( "#STATS_GAMES_WON" ), 			string( gamesWon ) )
-	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat3" ), Localize( "#STATS_GAMES_WIN_PERCENT" ), 	Localize( "#STATS_PERCENTAGE", winPercent ) )
-	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat4" ), Localize( "#STATS_GAMES_MVP" ), 			string( timesMVP ) )
-	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat5" ), Localize( "#STATS_GAMES_TOP3" ), 		string( timesTop3 ) )
+	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat0" ), Localize( "#STATS_HEADER_TIME_PLAYED" ), timePlayed )
+	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat1" ), Localize( "#STATS_GAMES_PLAYED" ), 		string( gamesPlayed ) )
+	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat2" ), Localize( "#STATS_GAMES_WON" ), 			string( gamesWon ) )
+	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat3" ), Localize( "#STATS_GAMES_WIN_PERCENT" ), 	Localize( "#STATS_PERCENTAGE", winPercent ) )
+	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat4" ), Localize( "#STATS_GAMES_MVP" ), 			string( timesMVP ) )
+	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat5" ), Localize( "#STATS_GAMES_TOP3" ), 		string( timesTop3 ) )
+
+	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat0" ), Localize( "#STATS_HEADER_TIME_PLAYED" ), string( 0 ))
+	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat1" ), Localize( "#STATS_GAMES_PLAYED" ), 		string( 0 ) )
+	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat2" ), Localize( "#STATS_GAMES_WON" ), 			string( 0 ) )
+	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat3" ), Localize( "#STATS_GAMES_WIN_PERCENT" ), 	string( 0 ) )
+	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat4" ), Localize( "#STATS_GAMES_MVP" ), 			string( 0 ) )
+	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat5" ), Localize( "#STATS_GAMES_TOP3" ), 		string( 0 ) )
 
 	//#########################
 	// 		   Modes
@@ -246,7 +253,22 @@ function UpdateViewStatsOverviewMenu()
 	//#########################
 
 	// Lifetime
-	local lifetimeAverage = player.GetPersistentVar( "kdratio_lifetime" ).tofloat()
+
+	var totalPilotKills = 0
+	
+	foreach (var key, var value in globalToneAPIKillData) {
+		totalPilotKills += value
+	}
+
+	var totalPilotDeaths = 0
+
+	foreach (var key, var value in globalToneAPIDWEData) {
+		totalPilotDeaths += value
+	}
+
+	float kdval = float(totalPilotKills) / float(totalPilotDeaths)
+
+	local lifetimeAverage = kdval
 	local formattedLifetimeAverage
 	if ( lifetimeAverage % 1 == 0 )
 		formattedLifetimeAverage = format( "%.0f", lifetimeAverage )
@@ -310,12 +332,6 @@ function UpdateViewStatsOverviewMenu()
 		kdratiopvp_match_average = format( "%.1f", kdratiopvp_match_average )
 	SetStatsLabelValue( file.menu, "Last10GamesPVPValue", [ "#STATS_KD_VALUE", kdratiopvp_match_average ] )
 	PlotKDPointsOnGraph( file.menu, 1, kdratiopvp_match, lifetimeAveragePVP )
-
-	var totalPilotKills = 0
-	
-	foreach (var key, var value in globalToneAPIKillData) {
-		totalPilotKills += value
-	}
 
 	/////////////////////////
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue0" ), string( totalPilotKills ) )
