@@ -1,7 +1,9 @@
 global function GetStatsFromToneAPI
 global function getWeaponKillsFromToneApi
+global function getNemesisWeaponFromToneAPI
 
 global table globalToneAPIKillData = {}
+global table globalToneAPIDeathData = {}
 
 void function GetStatsFromToneAPI()
 {
@@ -14,11 +16,12 @@ void function GetStatsFromToneAPI_threaded(){
         if(NSIsMasterServerAuthenticated()) break
         WaitFrame()
     }
-    //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v1")
+
+    //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v2_test")
     print("[PULSE] Loaded, getting data...")
     HttpRequest getStats
     getStats.method = HttpRequestMethod.GET
-    getStats.url = "https://tone.sleepycat.date/v1/client/weapons"
+    getStats.url = "https://tone.sleepycat.date/v2_test/client/weapons"
     getStats.queryParameters["player"] <- [NSGetLocalPlayerUID().tostring()]
     void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
     {
@@ -26,9 +29,8 @@ void function GetStatsFromToneAPI_threaded(){
         table JSONForConversion = DecodeJSON(response.body)
         foreach (var key, var value in JSONForConversion) {
             table test = expect table(value)
-            //this won't work on v2 since kills will be an integer already
-            string kills = expect string(test.kills)
-            globalToneAPIKillData[string(key)] <- kills.tointeger()
+            globalToneAPIKillData[string(key)] <- test.kills
+            globalToneAPIDeathData[string(key)] <- test.deaths
             print("[PULSE] " + key + " has been added.")
         }
         print("[PULSE] Kill data has been processed.")
@@ -45,8 +47,6 @@ void function GetStatsFromToneAPI_threaded(){
 
 int function getWeaponKillsFromToneApi(string weaponRef){
 
-    //Sliced names are to be removed afterwards
-	//print("[PULSE]" + weaponRef)
     if(weaponRef.find("mp_weapon") != null){
 		weaponRef = weaponRef.slice(10)
 	}
@@ -54,6 +54,19 @@ int function getWeaponKillsFromToneApi(string weaponRef){
     if(weaponRef in globalToneAPIKillData){
         print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIKillData[weaponRef] + " kills")
         return expect int(globalToneAPIKillData[weaponRef])
+    }
+    return 0
+}
+
+int function getNemesisWeaponFromToneAPI(string weaponRef){
+
+    if(weaponRef.find("mp_weapon") != null){
+        weaponRef = weaponRef.slice(10)
+    }
+
+    if(weaponRef in globalToneAPIKillData){
+        print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIDeathData[weaponRef] + " deaths")
+        return expect int(globalToneAPIDeathData[weaponRef])
     }
     return 0
 }

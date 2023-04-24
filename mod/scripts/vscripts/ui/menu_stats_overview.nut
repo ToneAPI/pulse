@@ -118,7 +118,7 @@ function UpdateViewStatsOverviewMenu()
 
 	table<string, table> weaponData = GetOverviewWeaponData()
 	table mostKillsData = weaponData[ "most_kills" ]
-	table mostUsedData = weaponData[ "most_used" ]
+	table nemesisWeapon = weaponData[ "nemesis_weapon" ]
 	table highestKPMData = weaponData[ "highest_kpm" ]
 
 	var weaponImageElem
@@ -158,14 +158,14 @@ function UpdateViewStatsOverviewMenu()
 	weaponNameElem = Hud_GetChild( file.menu, "WeaponName1" )
 	weaponDescElem = Hud_GetChild( file.menu, "WeaponDesc1" )
 	noDataElem = Hud_GetChild( file.menu, "WeaponImageTextOverlay1" )
-	if ( mostUsedData.ref != "" )
+	if ( nemesisWeapon.ref != "" )
 	{
-		SetItemImageWidth( weaponImageElem, expect string( mostUsedData.ref ) )
-		RuiSetImage( weaponRui, "buttonImage", GetItemImage( expect string( mostUsedData.ref ) ) )
+		SetItemImageWidth( weaponImageElem, expect string( nemesisWeapon.ref ) )
+		RuiSetImage( weaponRui, "buttonImage", GetItemImage( expect string( nemesisWeapon.ref ) ) )
 		Hud_Show( weaponImageElem )
-		Hud_SetText( weaponNameElem, mostUsedData.printName )
+		Hud_SetText( weaponNameElem, nemesisWeapon.printName )
 		Hud_Show( weaponNameElem )
-		SetStatsLabelValue( file.menu, "WeaponDesc1", HoursToTimeString( expect float( mostUsedData.val ) ) )
+		Hud_SetText( weaponDescElem, "#STATS_MOST_KILLS_VALUE", nemesisWeapon.val )
 		Hud_Show( weaponDescElem )
 		Hud_Hide( noDataElem )
 	}
@@ -321,26 +321,25 @@ function UpdateViewStatsOverviewMenu()
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue0" ), string( totalPilotKills ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue1" ), string( GetPlayerStatInt( player, "kills_stats", "titanKillsAsPilot" ) ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue2" ), string( GetPlayerStatInt( player, "kills_stats", "totalNPC" ) ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue3" ), string( GetPlayerStatInt( player, "kills_stats", "pilotKickMeleePilot" ) ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue4" ), string( GetPlayerStatInt( player, "kills_stats", "pilotExecutePilot" ) ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue3" ), string( getWeaponKillsFromToneApi("pilot_emptyhanded") ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue4" ), string( getWeaponKillsFromToneApi("human_execution") ) )
 //	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue5" ), string( GetPlayerStatInt( player, "kills_stats", "titanFallKill" ) ) )
 
-	
-
-	int totalTitanExecutions = 0
-	totalTitanExecutions += GetPlayerStatInt( player, "kills_stats", "titanExocutionIon" )
-	totalTitanExecutions += GetPlayerStatInt( player, "kills_stats", "titanExocutionScorch" )
-	totalTitanExecutions += GetPlayerStatInt( player, "kills_stats", "titanExocutionNorthstar" )
-	totalTitanExecutions += GetPlayerStatInt( player, "kills_stats", "titanExocutionRonin" )
-	totalTitanExecutions += GetPlayerStatInt( player, "kills_stats", "titanExocutionTone" )
-	totalTitanExecutions += GetPlayerStatInt( player, "kills_stats", "titanExocutionLegion" )
-	totalTitanExecutions += GetPlayerStatInt( player, "kills_stats", "titanExocutionVanguard" )
+	var titanMeleeKills = 0
+	titanMeleeKills += getWeaponKillsFromToneApi("titan_punch_ion")
+	titanMeleeKills += getWeaponKillsFromToneApi("titan_punch_scorch")
+	titanMeleeKills += getWeaponKillsFromToneApi("titan_punch_northstar")
+	titanMeleeKills += getWeaponKillsFromToneApi("titan_sword")
+	titanMeleeKills += getWeaponKillsFromToneApi("titan_punch_tone")
+	titanMeleeKills += getWeaponKillsFromToneApi("titan_punch_legion")
+	titanMeleeKills += getWeaponKillsFromToneApi("titan_punch_vanguard")
+	titanMeleeKills += getWeaponKillsFromToneApi("auto_titan_melee")
 
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue0" ), string( GetPlayerStatInt( player, "kills_stats", "pilotKillsAsTitan" ) ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue1" ), string( GetPlayerStatInt( player, "kills_stats", "titanKillsAsTitan" ) ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue2" ), string( totalTitanExecutions ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue2" ), string( titanMeleeKills ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue3" ), string( GetPlayerStatInt( player, "kills_stats", "titanMeleePilot" ) ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue4" ), string( GetPlayerStatInt( player, "kills_stats", "titanStepCrushPilot" ) ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue4" ), string( getWeaponKillsFromToneApi("damagedef_titan_step") ) )
 }
 
 function PlotKDPointsOnGraph( menu, graphIndex, values, dottedAverage )

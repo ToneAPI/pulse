@@ -306,10 +306,10 @@ table<string, table> function GetOverviewWeaponData()
 	Table[ "most_kills" ].ref <- ""
 	Table[ "most_kills" ].printName <- ""
 	Table[ "most_kills" ].val <- 0
-	Table[ "most_used" ] <- {}
-	Table[ "most_used" ].ref <- ""
-	Table[ "most_used" ].printName <- ""
-	Table[ "most_used" ].val <- 0
+	Table[ "nemesis_weapon" ] <- {}
+	Table[ "nemesis_weapon" ].ref <- ""
+	Table[ "nemesis_weapon" ].printName <- ""
+	Table[ "nemesis_weapon" ].val <- 0
 	Table[ "highest_kpm" ] <- {}
 	Table[ "highest_kpm" ].ref <- ""
 	Table[ "highest_kpm" ].printName <- ""
@@ -346,12 +346,12 @@ table<string, table> function GetOverviewWeaponData()
 			Table[ "most_kills" ].val = val
 		}
 
-		float fVal = GetPlayerStatFloat( player, "weapon_stats", "hoursUsed", weaponName )
-		if ( fVal > Table[ "most_used" ].val )
+		int nval = getNemesisWeaponFromToneAPI(weaponName)
+		if ( nval > Table[ "nemesis_weapon" ].val )
 		{
-			Table[ "most_used" ].ref = weaponName
-			Table[ "most_used" ].printName = weaponDisplayName
-			Table[ "most_used" ].val = fVal
+			Table[ "nemesis_weapon" ].ref = weaponName
+			Table[ "nemesis_weapon" ].printName = weaponDisplayName
+			Table[ "nemesis_weapon" ].val = nval
 		}
 
 		local killsPerMinute = 0
