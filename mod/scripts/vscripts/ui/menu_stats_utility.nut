@@ -361,9 +361,11 @@ table<string, table> function GetOverviewWeaponData()
 			kval = float(getWeaponKillsFromToneApi(weaponName))
 			dval = float(getDWEFromToneAPI(weaponName))
 			if (kval / dval > kdval){
-			kdval = float(getWeaponKillsFromToneApi(weaponName) / getDWEFromToneAPI(weaponName))
+			kdval = kval / dval
 			}
 		}
+		int rnd= int(kdval*100)
+		kdval = float(rnd)/100
 		if ( kdval > Table[ "highest_kpm" ].val.tofloat() )
 		{
 			Table[ "highest_kpm" ].ref = weaponName
