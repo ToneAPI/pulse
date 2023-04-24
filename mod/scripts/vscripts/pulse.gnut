@@ -50,10 +50,6 @@ void function GetStatsFromToneAPI_threaded(){
 
 int function getWeaponKillsFromToneApi(string weaponRef){
 
-    if(weaponRef.find("mp_weapon") != null){
-		weaponRef = weaponRef.slice(10)
-	}
-
     if(weaponRef in globalToneAPIKillData){
         print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIKillData[weaponRef] + " kills")
         return expect int(globalToneAPIKillData[weaponRef])
@@ -63,10 +59,6 @@ int function getWeaponKillsFromToneApi(string weaponRef){
 
 int function getNemesisWeaponFromToneAPI(string weaponRef){
 
-    if(weaponRef.find("mp_weapon") != null){
-        weaponRef = weaponRef.slice(10)
-    }
-
     if(weaponRef in globalToneAPIDeathData){
         print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIDeathData[weaponRef] + " nemesis weapon kills")
         return expect int(globalToneAPIDeathData[weaponRef])
@@ -75,10 +67,6 @@ int function getNemesisWeaponFromToneAPI(string weaponRef){
 }
 
 int function getDWEFromToneAPI(string weaponRef){
-
-    if(weaponRef.find("mp_weapon") != null){
-        weaponRef = weaponRef.slice(10)
-    }
 
     if(weaponRef in globalToneAPIDWEData){
         print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIDeathData[weaponRef] + " deaths while equipped")
