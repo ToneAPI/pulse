@@ -23,7 +23,7 @@ void function GetStatsFromToneAPI_threaded(){
     print("[PULSE] Loaded, getting data...")
     HttpRequest getStats
     getStats.method = HttpRequestMethod.GET
-    getStats.url = "https://tone.sleepycat.date/v2_test/client/weapons"
+    getStats.url = "https://tone.sleepycat.date/v2/client/weapons"
     getStats.queryParameters["player"] <- [NSGetLocalPlayerUID().tostring()]
     void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
     {
