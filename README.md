@@ -4,7 +4,8 @@ Pulse is a clientside mod for Titanfall 2 letting you view killstats collected b
 
 Currently, features include:
 - displaying kills in `Pilot Weapons`
-- displaying kills and most used weapon (by kills) in `Overview`
+- displaying kills in `Titans` tab
+- mostly functional `Overview` tab
 
 Want to know what we have planned for future updates? See [here.](https://github.com/ToneAPI/pulse/projects?query=is%3Aopen)
 
