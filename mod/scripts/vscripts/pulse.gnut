@@ -18,7 +18,6 @@ void function GetStatsFromToneAPI_threaded(){
         if(NSIsMasterServerAuthenticated()) break
         WaitFrame()
     }
-
     //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v2_test")
     print("[PULSE] Loaded, getting data...")
     HttpRequest getStats
