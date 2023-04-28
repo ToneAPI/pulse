@@ -8,7 +8,7 @@
         "Path": "pulse.gnut",
         "RunOn": "UI",
         "UICallback": {
-            "After": "GetStatsFromToneAPI"
+            "After": "pulseInit"
         }
         }
     ]

@@ -1,29 +1,44 @@
-global function GetStatsFromToneAPI
+global function pulseInit
+global function GetWeaponStatsFromToneAPI
+global function GetMapStatsFromToneAPI
 global function getWeaponKillsFromToneApi
 global function getNemesisWeaponFromToneAPI
 global function getDWEFromToneAPI
+global function getMapKillFromToneAPI
+global function getMapDeathFromToneAPI
+global function getMapDistFromToneAPI
+global function getMapMDistFromToneAPI
 
 global table globalToneAPIKillData = {}
 global table globalToneAPIDeathData = {}
 global table globalToneAPIDWEData = {}
+global table globalToneAPIMapDeathData = {}
+global table globalToneAPIMapDistData = {}
+global table globalToneAPIMapKillData = {}
+global table globalToneAPIMapMDistData = {}
 
-void function GetStatsFromToneAPI()
+void function pulseInit()
 {
-    thread GetStatsFromToneAPI_threaded()
+    print("[PULSE] v1.2.0 has been loaded.")
 }
 
-void function GetStatsFromToneAPI_threaded(){
+void function GetWeaponStatsFromToneAPI()
+{
+    thread GetWeaponStatsFromToneAPI_threaded()
+}
+
+void function GetWeaponStatsFromToneAPI_threaded(){
 
     while(true){
         if(NSIsMasterServerAuthenticated()) break
         WaitFrame()
     }
     //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v2_test")
-    print("[PULSE] Loaded, getting data...")
-    HttpRequest getStats
-    getStats.method = HttpRequestMethod.GET
-    getStats.url = "https://tone.sleepycat.date/v2/client/weapons"
-    getStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
+    print("[PULSE] Getting kill data...")
+    HttpRequest getWeaponStats
+    getWeaponStats.method = HttpRequestMethod.GET
+    getWeaponStats.url = "https://tone.sleepycat.date/v2/client/weapons"
+    getWeaponStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
     void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
     {
         print("[PULSE] Kill data received, processing...")
@@ -43,8 +58,47 @@ void function GetStatsFromToneAPI_threaded(){
         print("[PULSE] Encountered an error getting kill data...")
     }
 
-    bool result = NSHttpRequest(getStats, onSuccess, onFailure)
-    print("[PULSE] result is " + result)
+    NSHttpRequest(getWeaponStats, onSuccess, onFailure)
+}
+
+void function GetMapStatsFromToneAPI()
+{
+    thread GetMapStatsFromToneAPI_threaded()
+}
+
+void function GetMapStatsFromToneAPI_threaded(){
+
+    while(true){
+        if(NSIsMasterServerAuthenticated()) break
+        WaitFrame()
+    }
+    //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v2_test")
+    print("[PULSE] Getting map data...")
+    HttpRequest getMapStats
+    getMapStats.method = HttpRequestMethod.GET
+    getMapStats.url = "https://tone.sleepycat.date/v2/client/maps"
+    getMapStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        print("[PULSE] Map data received, processing...")
+        table JSONForConversion = DecodeJSON(response.body)
+        foreach (var key, var value in JSONForConversion) {
+            table test = expect table(value)
+            globalToneAPIMapKillData[string(key)] <- test.kills
+            globalToneAPIMapDeathData[string(key)] <- test.deaths
+            globalToneAPIMapDistData[string(key)] <- test.total_distance
+            globalToneAPIMapMDistData[string(key)] <- test.max_distance
+            print("[PULSE] " + key + " has been added.")
+        }
+        print("[PULSE] Map data has been processed.")
+    }
+
+    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        print("[PULSE] Encountered an error getting map data...")
+    }
+
+    NSHttpRequest(getMapStats, onSuccess, onFailure)
 }
 
 int function getWeaponKillsFromToneApi(string weaponRef){
@@ -70,6 +124,46 @@ int function getDWEFromToneAPI(string weaponRef){
     if(weaponRef in globalToneAPIDWEData){
         print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIDeathData[weaponRef] + " deaths while equipped")
         return expect int(globalToneAPIDWEData[weaponRef])
+    }
+    return 0
+}
+
+int function getMapKillFromToneAPI(string mapName){
+
+    mapName = mapName.slice(3)
+    if(mapName in globalToneAPIMapKillData){
+        print("[PULSE] Found matching map : " + mapName + " with " + globalToneAPIMapKillData[mapName] + " kills")
+        return expect int(globalToneAPIMapKillData[mapName])
+    }
+    return 0
+}
+
+int function getMapDeathFromToneAPI(string mapName){
+
+    mapName = mapName.slice(3)
+    if(mapName in globalToneAPIMapDeathData){
+        print("[PULSE] Found matching map : " + mapName + " with " + globalToneAPIMapDeathData[mapName] + " deaths")
+        return expect int(globalToneAPIMapDeathData[mapName])
+    }
+    return 0
+}
+
+int function getMapMDistFromToneAPI(string mapName){
+
+    mapName = mapName.slice(3)
+    if(mapName in globalToneAPIMapMDistData){
+        print("[PULSE] Found matching map : " + mapName + " with " + globalToneAPIMapMDistData[mapName] + " hammer units")
+        return expect int(globalToneAPIMapMDistData[mapName])
+    }
+    return 0
+}
+
+int function getMapDistFromToneAPI(string mapName){
+
+    mapName = mapName.slice(3)
+    if(mapName in globalToneAPIMapDistData){
+        print("[PULSE] Found matching map : " + mapName + " with " + globalToneAPIMapDistData[mapName] + "hammer units")
+        return expect int(globalToneAPIMapKillData[mapName])
     }
     return 0
 }
