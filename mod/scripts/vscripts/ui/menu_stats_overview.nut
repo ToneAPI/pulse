@@ -36,6 +36,7 @@ void function OnStatsOverview_Open()
 
 function UpdateViewStatsOverviewMenu()
 {
+	GetStatsFromToneAPI()
 	entity player = GetUIPlayer()
 	if ( player == null )
 		return
