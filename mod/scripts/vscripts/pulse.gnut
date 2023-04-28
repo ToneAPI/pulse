@@ -163,7 +163,7 @@ int function getMapDistFromToneAPI(string mapName){
     mapName = mapName.slice(3)
     if(mapName in globalToneAPIMapDistData){
         print("[PULSE] Found matching map : " + mapName + " with " + globalToneAPIMapDistData[mapName] + "hammer units")
-        return expect int(globalToneAPIMapKillData[mapName])
+        return expect int(globalToneAPIMapDistData[mapName])
     }
     return 0
 }

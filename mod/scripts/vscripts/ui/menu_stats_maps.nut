@@ -145,27 +145,25 @@ void function UpdateStatsForMap( string mapName )
 	var imageElem = Hud_GetRui( Hud_GetChild( file.menu, "WeaponImageLarge" ) )
 	RuiSetImage( imageElem, "basicImage", GetMapImageForMapName( mapName ) )
 
-	string timePlayed = HoursToTimeString( GetGameStatForMapFloat( "hoursPlayed", mapName ) )
-	string gamesPlayed = string( GetGameStatForMapInt( "game_completed", mapName ) )
+	string timePlayed = "null"
+	string gamesPlayed = "null"
 
 	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat0" ), Localize( "#STATS_HEADER_TIME_PLAYED" ), 		timePlayed )
 	SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat1" ), Localize( "#STATS_GAMES_PLAYED" ), 				gamesPlayed )
 	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat2" ), Localize( "#STATS_GAMES_PLAYED" ), 				gamesPlayed )
 	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat3" ), Localize( "#STATS_GAMES_PLAYED" ), 				gamesPlayed )
 
-	string winPercent = GetPercent( float( GetGameStatForMapInt( "game_won", mapName ) ), float( GetGameStatForMapInt( "game_completed", mapName ) ), 0 )
-	print("[PULSE]" + mapName)
 	SetStatsLabelValue( file.menu, "KillsLabel0", 				"KILLS ON MAP" )
 	SetStatsLabelValue( file.menu, "KillsValue0", 				getMapKillFromToneAPI(mapName) )
 
-	SetStatsLabelValue( file.menu, "KillsLabel1", 				"#STATS_GAMES_WON" )
-	SetStatsLabelValue( file.menu, "KillsValue1", 				GetGameStatForMapInt( "game_won", mapName ) )
+	SetStatsLabelValue( file.menu, "KillsLabel1", 				"DEATHS ON MAP" )
+	SetStatsLabelValue( file.menu, "KillsValue1", 				getMapDeathFromToneAPI(mapName) )
 
-	SetStatsLabelValue( file.menu, "KillsLabel2", 				"#STATS_GAMES_MVP" )
-	SetStatsLabelValue( file.menu, "KillsValue2", 				GetGameStatForMapInt( "mvp", mapName ) )
+	SetStatsLabelValue( file.menu, "KillsLabel2", 				"TOTAL SHOT DISTANCE" )
+	SetStatsLabelValue( file.menu, "KillsValue2", 				getMapDistFromToneAPI(mapName) )
 
-	SetStatsLabelValue( file.menu, "KillsLabel3", 				"#STATS_GAMES_TOP3" )
-	SetStatsLabelValue( file.menu, "KillsValue3", 				GetGameStatForMapInt( "top3OnTeam", mapName ) )
+	SetStatsLabelValue( file.menu, "KillsLabel3", 				"MAXIMUM SHOT DISTANCE" )
+	SetStatsLabelValue( file.menu, "KillsValue3", 				getMapMDistFromToneAPI(mapName) )
 
 	SetStatsLabelValue( file.menu, "KillsLabel4", 				"--" )
 	SetStatsLabelValue( file.menu, "KillsValue4", 				"--" )
@@ -211,7 +209,7 @@ void function UpdateStatsForMap( string mapName )
 
 	array<string> fdMaps = GetPlaylistMaps( "fd" )
 
-	if ( fdMaps.contains( mapName ) )
+	if ( 0 == 1 )  // maybe work later on some FD servers
 	{
 		array<var> pveElems = GetElementsByClassname( file.menu, "PvEGroup" )
 		foreach ( elem in pveElems )
