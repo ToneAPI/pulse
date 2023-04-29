@@ -1,6 +1,10 @@
 
 global function InitViewStatsMenu
 
+struct{
+	array<string> allMaps
+} file
+
 void function InitViewStatsMenu()
 {
 	var menu = GetMenu( "ViewStatsMenu" )
@@ -37,6 +41,10 @@ void function InitViewStatsMenu()
 
 void function OnViewStats_Open()
 {
+	foreach(elemNum in file.allMaps){
+	string mapName = expect string(file.allMaps[ elemNum ])
+	getGamemodeStatsFromToneAPI(mapName)
+	}
 	GetWeaponStatsFromToneAPI()
 	GetMapStatsFromToneAPI()
 	UI_SetPresentationType( ePresentationType.DEFAULT )

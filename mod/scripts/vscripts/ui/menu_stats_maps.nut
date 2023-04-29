@@ -141,6 +141,8 @@ void function UpdateStatsForMap( string mapName )
 
 	Hud_SetText( Hud_GetChild( file.menu, "WeaponName" ), GetMapDisplayName( mapName ) )
 
+	getGamemodeStatsFromToneAPI(mapName)
+
 	// Image
 	var imageElem = Hud_GetRui( Hud_GetChild( file.menu, "WeaponImageLarge" ) )
 	RuiSetImage( imageElem, "basicImage", GetMapImageForMapName( mapName ) )
@@ -178,13 +180,19 @@ void function UpdateStatsForMap( string mapName )
 	array<string> gameModesArray = GetPersistenceEnumAsArray( "gameModes" )
 
 	array<PieChartEntry> modes
-	foreach ( modeName in gameModesArray )
+	int enumCount = PersistenceGetEnumCount( "gameModes" )
+	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
-		float modePlayedTime = GetGameStatForMapAndModeFloat( "hoursPlayed", mapName, modeName )
-		if ( modePlayedTime > 0 )
-			AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
+		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
+		if ( modeName in globalToneAPIGamemodeData )
+		{
+			float modePlayedTime = float(globalToneAPIGamemodeData[modeName])
+			print(modePlayedTime)
+			if ( modePlayedTime > 0 ) {
+				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
+			}
+		}
 	}
-
 	const MAX_MODE_ROWS = 8
 
 	if ( modes.len() > 0 )

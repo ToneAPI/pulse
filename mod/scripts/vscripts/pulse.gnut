@@ -8,6 +8,7 @@ global function getMapKillFromToneAPI
 global function getMapDeathFromToneAPI
 global function getMapDistFromToneAPI
 global function getMapMDistFromToneAPI
+global function getGamemodeStatsFromToneAPI
 
 global table globalToneAPIKillData = {}
 global table globalToneAPIDeathData = {}
@@ -16,11 +17,13 @@ global table globalToneAPIMapDeathData = {}
 global table globalToneAPIMapDistData = {}
 global table globalToneAPIMapKillData = {}
 global table globalToneAPIMapMDistData = {}
+global table globalToneAPIGamemodeData = {}
 
 string prefix = "default"
 string HTTPrequestURL = "default"
 int weaponEntries = 0
 int mapEntries = 0
+int mapGamemodeEntries = 0
 
 void function pulseInit()
 {
@@ -88,6 +91,35 @@ void function GetMapStatsFromToneAPI()
     }
 
     NSHttpRequest(getMapStats, onSuccess, onFailure)
+}
+
+void function getGamemodeStatsFromToneAPI(string mapName)
+{
+    print(prefix + "test")
+    mapGamemodeEntries = 0
+    string mapNameSliced = mapName.slice(3)
+    HttpRequest getMapGamemodeStats
+    getMapGamemodeStats.method = HttpRequestMethod.GET
+    getMapGamemodeStats.url = HTTPrequestURL + "/gamemodes"
+    getMapGamemodeStats.queryParameters["map"] <- [mapNameSliced]
+    getMapGamemodeStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        table JSONForConversion = DecodeJSON(response.body)
+        foreach (var key, var value in JSONForConversion) {
+            table test = expect table(value)
+            globalToneAPIGamemodeData[string(key)] <- test.kills
+            mapGamemodeEntries += 1
+        }
+        print(prefix + "Map gamemode data has been processed with a total of " + string(mapGamemodeEntries) + " entries.")
+    }
+
+    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        print(prefix + "Encountered an error getting map gamemode data...")
+    }
+
+    NSHttpRequest(getMapGamemodeStats, onSuccess, onFailure)
 }
 
 int function getWeaponKillsFromToneAPI(string weaponRef){
