@@ -3,6 +3,12 @@
     "Description": "Displays Tone API kill data in the Stats tab.",
     "Version": "1.1.0",
     "LoadPriority": 1,
+    "ConVars": [
+        {
+            "Name": "ToneURL",
+            "DefaultValue": "https://tone.sleepycat.date/v2/client"
+        }
+    ],
     "Scripts": [
         {
         "Path": "pulse.gnut",

@@ -17,45 +17,51 @@ global table globalToneAPIMapDistData = {}
 global table globalToneAPIMapKillData = {}
 global table globalToneAPIMapMDistData = {}
 
+string prefix = "default"
+string HTTPrequestURL = "default"
+int weaponEntries = 0
+int mapEntries = 0
+int weaponRefCount = 0
+int weaponRefKills = 0
+int weaponRefDeaths = 0
+int weaponRefDWE = 0
+int mapRefCount = 0
+int mapRefKills = 0
+int mapRefDeaths = 0
+int mapRefDist = 0
+int mapRefMDist = 0
+
 void function pulseInit()
 {
-    print("[PULSE] v1.2.0 has been loaded.")
+    HTTPrequestURL = GetConVarString("ToneURL")
+    prefix = "\x1b[38;2;255;178;102m[PULSE]\x1b[0m "
+    print(prefix + "v1.2.0 has been loaded.")
 }
 
 void function GetWeaponStatsFromToneAPI()
 {
-    thread GetWeaponStatsFromToneAPI_threaded()
-}
-
-void function GetWeaponStatsFromToneAPI_threaded(){
-
-    while(true){
-        if(NSIsMasterServerAuthenticated()) break
-        WaitFrame()
-    }
-    //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v2_test")
-    print("[PULSE] Getting kill data...")
+    print(prefix + "Getting kill data...")
     HttpRequest getWeaponStats
     getWeaponStats.method = HttpRequestMethod.GET
-    getWeaponStats.url = "https://tone.sleepycat.date/v2/client/weapons"
+    getWeaponStats.url = HTTPrequestURL + "/weapons"
     getWeaponStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
     void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
     {
-        print("[PULSE] Kill data received, processing...")
+        print(prefix + "Kill data received, processing...")
         table JSONForConversion = DecodeJSON(response.body)
         foreach (var key, var value in JSONForConversion) {
             table test = expect table(value)
             globalToneAPIKillData[string(key)] <- test.kills
             globalToneAPIDeathData[string(key)] <- test.deaths
             globalToneAPIDWEData[string(key)] <- test.deaths_while_equipped
-            print("[PULSE] " + key + " has been added.")
+            weaponEntries += 1
         }
-        print("[PULSE] Kill data has been processed.")
+        print(prefix + "Kill data has been processed with a total of " + string(weaponEntries) + " entries.")
     }
 
     void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
     {
-        print("[PULSE] Encountered an error getting kill data...")
+        print(prefix + "Encountered an error getting kill data...")
     }
 
     NSHttpRequest(getWeaponStats, onSuccess, onFailure)
@@ -63,24 +69,14 @@ void function GetWeaponStatsFromToneAPI_threaded(){
 
 void function GetMapStatsFromToneAPI()
 {
-    thread GetMapStatsFromToneAPI_threaded()
-}
-
-void function GetMapStatsFromToneAPI_threaded(){
-
-    while(true){
-        if(NSIsMasterServerAuthenticated()) break
-        WaitFrame()
-    }
-    //SetConVarString("ToneURL", "https://toneapi.sleepycat.date/v2_test")
-    print("[PULSE] Getting map data...")
+    print(prefix + "Getting map data...")
     HttpRequest getMapStats
     getMapStats.method = HttpRequestMethod.GET
-    getMapStats.url = "https://tone.sleepycat.date/v2/client/maps"
+    getMapStats.url = HTTPrequestURL + "/maps"
     getMapStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
     void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
     {
-        print("[PULSE] Map data received, processing...")
+        print(prefix + "Map data received, processing...")
         table JSONForConversion = DecodeJSON(response.body)
         foreach (var key, var value in JSONForConversion) {
             table test = expect table(value)
@@ -88,14 +84,14 @@ void function GetMapStatsFromToneAPI_threaded(){
             globalToneAPIMapDeathData[string(key)] <- test.deaths
             globalToneAPIMapDistData[string(key)] <- test.total_distance
             globalToneAPIMapMDistData[string(key)] <- test.max_distance
-            print("[PULSE] " + key + " has been added.")
+            mapEntries += 1
         }
-        print("[PULSE] Map data has been processed.")
+        print(prefix + "Map data has been processed with a total of " + string(mapEntries) + " entries.")
     }
 
     void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
     {
-        print("[PULSE] Encountered an error getting map data...")
+        print(prefix + "Encountered an error getting map data...")
     }
 
     NSHttpRequest(getMapStats, onSuccess, onFailure)
@@ -104,27 +100,33 @@ void function GetMapStatsFromToneAPI_threaded(){
 int function getWeaponKillsFromToneApi(string weaponRef){
 
     if(weaponRef in globalToneAPIKillData){
-        print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIKillData[weaponRef] + " kills")
+        weaponRefCount += 1
+        weaponRefKills += expect int(globalToneAPIKillData[weaponRef])
         return expect int(globalToneAPIKillData[weaponRef])
     }
+    print(prefix + "Found a total of " + string(weaponRefCount) + " weapon references with " + string(weaponRefKills) + " total kills.")
     return 0
 }
 
 int function getNemesisWeaponFromToneAPI(string weaponRef){
 
     if(weaponRef in globalToneAPIDeathData){
-        print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIDeathData[weaponRef] + " nemesis weapon kills")
+        weaponRefCount += 1
+        weaponRefDeaths += expect int(globalToneAPIDeathData[weaponRef])
         return expect int(globalToneAPIDeathData[weaponRef])
     }
+    print(prefix + "Found a total of " + string(weaponRefCount) + " weapon references with " + string(weaponRefDeaths) + " total deaths.")
     return 0
 }
 
 int function getDWEFromToneAPI(string weaponRef){
 
     if(weaponRef in globalToneAPIDWEData){
-        print("[PULSE] Found matching weapon : " + weaponRef + " with " + globalToneAPIDeathData[weaponRef] + " deaths while equipped")
+        weaponRefCount += 1
+        weaponRefDWE += expect int(globalToneAPIDWEData[weaponRef])
         return expect int(globalToneAPIDWEData[weaponRef])
     }
+    print(prefix + "Found a total of " + string(weaponRefCount) + " weapon references with " + string(weaponRefDWE) + " total deaths with weapon.")
     return 0
 }
 
@@ -132,9 +134,11 @@ int function getMapKillFromToneAPI(string mapName){
 
     mapName = mapName.slice(3)
     if(mapName in globalToneAPIMapKillData){
-        print("[PULSE] Found matching map : " + mapName + " with " + globalToneAPIMapKillData[mapName] + " kills")
+        mapRefCount += 1
+        mapRefKills += expect int(globalToneAPIMapKillData[mapName])
         return expect int(globalToneAPIMapKillData[mapName])
     }
+    print(prefix + "Found a total of " + string(mapRefCount) + " map references with " + string(mapRefKills) + " total kills.")
     return 0
 }
 
@@ -142,9 +146,11 @@ int function getMapDeathFromToneAPI(string mapName){
 
     mapName = mapName.slice(3)
     if(mapName in globalToneAPIMapDeathData){
-        print("[PULSE] Found matching map : " + mapName + " with " + globalToneAPIMapDeathData[mapName] + " deaths")
+        mapRefCount += 1
+        mapRefDeaths += expect int(globalToneAPIMapDeathData[mapName])
         return expect int(globalToneAPIMapDeathData[mapName])
     }
+    print(prefix + "Found a total of " + string(mapRefCount) + " map references with " + string(mapRefDeaths) + " total deaths.")
     return 0
 }
 
@@ -152,9 +158,11 @@ int function getMapMDistFromToneAPI(string mapName){
 
     mapName = mapName.slice(3)
     if(mapName in globalToneAPIMapMDistData){
-        print("[PULSE] Found matching map : " + mapName + " with " + globalToneAPIMapMDistData[mapName] + " hammer units")
+        mapRefCount += 1
+        mapRefMDist += expect int(globalToneAPIMapMDistData[mapName])
         return expect int(globalToneAPIMapMDistData[mapName])
     }
+    print(prefix + "Found a total of " + string(mapRefCount) + " map references with " + string(mapRefMDist) + " total maximum distance in Hammer units.")
     return 0
 }
 
@@ -162,8 +170,10 @@ int function getMapDistFromToneAPI(string mapName){
 
     mapName = mapName.slice(3)
     if(mapName in globalToneAPIMapDistData){
-        print("[PULSE] Found matching map : " + mapName + " with " + globalToneAPIMapDistData[mapName] + "hammer units")
+        mapRefCount += 1
+        mapRefDist += expect int(globalToneAPIMapDistData[mapName])
         return expect int(globalToneAPIMapDistData[mapName])
     }
+    print(prefix + "Found a total of " + string(mapRefCount) + " map references with " + string(mapRefDist) + " total distance in Hammer units.")
     return 0
 }
