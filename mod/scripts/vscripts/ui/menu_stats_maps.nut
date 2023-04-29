@@ -181,17 +181,38 @@ void function UpdateStatsForMap( string mapName )
 
 	array<PieChartEntry> modes
 	int enumCount = PersistenceGetEnumCount( "gameModes" )
+	table< string, array<int> > customGamemodeList = {
+		sns = [123, 12, 1, 255],
+		fw = [0, 1, 12, 255],
+		gg = [234, 32, 1, 255]
+	}
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
 		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
 		if ( modeName in globalToneAPIGamemodeData )
 		{
-			float modePlayedTime = float(globalToneAPIGamemodeData[modeName])
+			float modePlayedTime = 0
+			modePlayedTime = float(globalToneAPIGamemodeData[modeName])
 			print(modePlayedTime)
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
+				print (modes)
+				print (GameMode_GetName(modeName))
+				print (GetGameModeDisplayColor(modeName))
 			}
 		}
+		foreach (string key, array<int> value in customGamemodeList)
+			if ( key in globalToneAPIGamemodeData)
+			{
+				int timesCalled = 0
+				float modePlayedTime = 0
+				modePlayedTime = float(globalToneAPIGamemodeData[key])
+				if ( modePlayedTime > 0 && timesCalled == 0) {
+					AddPieChartEntry( modes, key, modePlayedTime, value)
+					print("CUSTOM GAMEMODE DATA FUNCTION CALLED")
+					timesCalled += 1
+				}
+			}
 	}
 	const MAX_MODE_ROWS = 8
 
