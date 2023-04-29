@@ -160,10 +160,10 @@ void function UpdateStatsForMap( string mapName )
 	SetStatsLabelValue( file.menu, "KillsValue1", 				getMapDeathFromToneAPI(mapName) )
 
 	SetStatsLabelValue( file.menu, "KillsLabel2", 				"TOTAL SHOT DISTANCE" )
-	SetStatsLabelValue( file.menu, "KillsValue2", 				getMapDistFromToneAPI(mapName) )
+	SetStatsLabelValue( file.menu, "KillsValue2", 				string(int((1.905 * float(getMapDistFromToneAPI(mapName) ) ) )/100) + "m" )
 
 	SetStatsLabelValue( file.menu, "KillsLabel3", 				"MAXIMUM SHOT DISTANCE" )
-	SetStatsLabelValue( file.menu, "KillsValue3", 				getMapMDistFromToneAPI(mapName) )
+	SetStatsLabelValue( file.menu, "KillsValue3", 				string(int((1.905 * float(getMapMDistFromToneAPI(mapName) ) ) )/100) + "m" )
 
 	SetStatsLabelValue( file.menu, "KillsLabel4", 				"--" )
 	SetStatsLabelValue( file.menu, "KillsValue4", 				"--" )
