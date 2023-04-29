@@ -21,15 +21,6 @@ string prefix = "default"
 string HTTPrequestURL = "default"
 int weaponEntries = 0
 int mapEntries = 0
-int weaponRefCount = 0
-int weaponRefKills = 0
-int weaponRefDeaths = 0
-int weaponRefDWE = 0
-int mapRefCount = 0
-int mapRefKills = 0
-int mapRefDeaths = 0
-int mapRefDist = 0
-int mapRefMDist = 0
 
 void function pulseInit()
 {
@@ -41,6 +32,7 @@ void function pulseInit()
 void function GetWeaponStatsFromToneAPI()
 {
     print(prefix + "Getting kill data...")
+    weaponEntries = 0
     HttpRequest getWeaponStats
     getWeaponStats.method = HttpRequestMethod.GET
     getWeaponStats.url = HTTPrequestURL + "/weapons"
@@ -70,6 +62,7 @@ void function GetWeaponStatsFromToneAPI()
 void function GetMapStatsFromToneAPI()
 {
     print(prefix + "Getting map data...")
+    mapEntries = 0
     HttpRequest getMapStats
     getMapStats.method = HttpRequestMethod.GET
     getMapStats.url = HTTPrequestURL + "/maps"
@@ -100,33 +93,24 @@ void function GetMapStatsFromToneAPI()
 int function getWeaponKillsFromToneApi(string weaponRef){
 
     if(weaponRef in globalToneAPIKillData){
-        weaponRefCount += 1
-        weaponRefKills += expect int(globalToneAPIKillData[weaponRef])
         return expect int(globalToneAPIKillData[weaponRef])
     }
-    print(prefix + "Found a total of " + string(weaponRefCount) + " weapon references with " + string(weaponRefKills) + " total kills.")
     return 0
 }
 
 int function getNemesisWeaponFromToneAPI(string weaponRef){
 
     if(weaponRef in globalToneAPIDeathData){
-        weaponRefCount += 1
-        weaponRefDeaths += expect int(globalToneAPIDeathData[weaponRef])
         return expect int(globalToneAPIDeathData[weaponRef])
     }
-    print(prefix + "Found a total of " + string(weaponRefCount) + " weapon references with " + string(weaponRefDeaths) + " total deaths.")
     return 0
 }
 
 int function getDWEFromToneAPI(string weaponRef){
 
     if(weaponRef in globalToneAPIDWEData){
-        weaponRefCount += 1
-        weaponRefDWE += expect int(globalToneAPIDWEData[weaponRef])
         return expect int(globalToneAPIDWEData[weaponRef])
     }
-    print(prefix + "Found a total of " + string(weaponRefCount) + " weapon references with " + string(weaponRefDWE) + " total deaths with weapon.")
     return 0
 }
 
@@ -134,11 +118,8 @@ int function getMapKillFromToneAPI(string mapName){
 
     mapName = mapName.slice(3)
     if(mapName in globalToneAPIMapKillData){
-        mapRefCount += 1
-        mapRefKills += expect int(globalToneAPIMapKillData[mapName])
         return expect int(globalToneAPIMapKillData[mapName])
     }
-    print(prefix + "Found a total of " + string(mapRefCount) + " map references with " + string(mapRefKills) + " total kills.")
     return 0
 }
 
@@ -146,11 +127,8 @@ int function getMapDeathFromToneAPI(string mapName){
 
     mapName = mapName.slice(3)
     if(mapName in globalToneAPIMapDeathData){
-        mapRefCount += 1
-        mapRefDeaths += expect int(globalToneAPIMapDeathData[mapName])
         return expect int(globalToneAPIMapDeathData[mapName])
     }
-    print(prefix + "Found a total of " + string(mapRefCount) + " map references with " + string(mapRefDeaths) + " total deaths.")
     return 0
 }
 
@@ -158,11 +136,8 @@ int function getMapMDistFromToneAPI(string mapName){
 
     mapName = mapName.slice(3)
     if(mapName in globalToneAPIMapMDistData){
-        mapRefCount += 1
-        mapRefMDist += expect int(globalToneAPIMapMDistData[mapName])
         return expect int(globalToneAPIMapMDistData[mapName])
     }
-    print(prefix + "Found a total of " + string(mapRefCount) + " map references with " + string(mapRefMDist) + " total maximum distance in Hammer units.")
     return 0
 }
 
@@ -170,10 +145,7 @@ int function getMapDistFromToneAPI(string mapName){
 
     mapName = mapName.slice(3)
     if(mapName in globalToneAPIMapDistData){
-        mapRefCount += 1
-        mapRefDist += expect int(globalToneAPIMapDistData[mapName])
         return expect int(globalToneAPIMapDistData[mapName])
     }
-    print(prefix + "Found a total of " + string(mapRefCount) + " map references with " + string(mapRefDist) + " total distance in Hammer units.")
     return 0
 }
