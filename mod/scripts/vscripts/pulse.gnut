@@ -1,7 +1,7 @@
 global function pulseInit
 global function GetWeaponStatsFromToneAPI
 global function GetMapStatsFromToneAPI
-global function getWeaponKillsFromToneApi
+global function getWeaponKillsFromToneAPI
 global function getNemesisWeaponFromToneAPI
 global function getDWEFromToneAPI
 global function getMapKillFromToneAPI
@@ -90,7 +90,7 @@ void function GetMapStatsFromToneAPI()
     NSHttpRequest(getMapStats, onSuccess, onFailure)
 }
 
-int function getWeaponKillsFromToneApi(string weaponRef){
+int function getWeaponKillsFromToneAPI(string weaponRef){
 
     if(weaponRef in globalToneAPIKillData){
         return expect int(globalToneAPIKillData[weaponRef])

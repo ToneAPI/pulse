@@ -175,7 +175,7 @@ void function UpdateStatsForTitan( string titanRef, int loadoutIndex )
 	int aiKills
 	foreach ( weaponRef in file.titanStatLoadout[ titanRef ] )
 	{
-		totalKills += getWeaponKillsFromToneApi(weaponRef)
+		totalKills += getWeaponKillsFromToneAPI(weaponRef)
 		pilotKills += GetPlayerStatInt( player, "weapon_kill_stats", "pilots", weaponRef )
 		titanKills += GetPlayerStatInt( player, "weapon_kill_stats", "titansTotal", weaponRef )
 		aiKills += GetPlayerStatInt( player, "weapon_kill_stats", "ai", weaponRef )

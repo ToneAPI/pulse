@@ -338,7 +338,7 @@ table<string, table> function GetOverviewWeaponData()
 		if ( !PersistenceEnumValueIsValid( "loadoutWeaponsAndAbilities", weaponName ) )
 			continue
 
-		int val = getWeaponKillsFromToneApi(weaponName)
+		int val = getWeaponKillsFromToneAPI(weaponName)
 		if ( val > Table[ "most_kills" ].val )
 		{
 			Table[ "most_kills" ].ref = weaponName
@@ -357,8 +357,8 @@ table<string, table> function GetOverviewWeaponData()
 		float kdval = 0
 		float kval = 0
 		float dval = 0
-		if( getWeaponKillsFromToneApi(weaponName) != 0 && getDWEFromToneAPI(weaponName) != 0){
-			kval = float(getWeaponKillsFromToneApi(weaponName))
+		if( getWeaponKillsFromToneAPI(weaponName) != 0 && getDWEFromToneAPI(weaponName) != 0){
+			kval = float(getWeaponKillsFromToneAPI(weaponName))
 			dval = float(getDWEFromToneAPI(weaponName))
 			if (kval / dval > kdval){
 			kdval = kval / dval
