@@ -8,7 +8,7 @@ global function getMapKillFromToneAPI
 global function getMapDeathFromToneAPI
 global function getMapDistFromToneAPI
 global function getMapMDistFromToneAPI
-global function getGamemodeStatsFromToneAPI
+global function fetchGamemodeStatsFromToneAPI
 
 global table globalToneAPIKillData = {}
 global table globalToneAPIDeathData = {}
@@ -93,9 +93,8 @@ void function GetMapStatsFromToneAPI()
     NSHttpRequest(getMapStats, onSuccess, onFailure)
 }
 
-void function getGamemodeStatsFromToneAPI(string mapName)
+void function fetchGamemodeStatsFromToneAPI(string mapName)
 {
-    print(prefix + "test")
     mapGamemodeEntries = 0
     string mapNameSliced = mapName.slice(3)
     HttpRequest getMapGamemodeStats

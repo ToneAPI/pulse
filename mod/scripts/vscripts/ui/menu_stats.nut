@@ -43,7 +43,7 @@ void function OnViewStats_Open()
 {
 	foreach(elemNum in file.allMaps){
 	string mapName = expect string(file.allMaps[ elemNum ])
-	getGamemodeStatsFromToneAPI(mapName)
+	fetchGamemodeStatsFromToneAPI(mapName)
 	}
 	GetWeaponStatsFromToneAPI()
 	GetMapStatsFromToneAPI()

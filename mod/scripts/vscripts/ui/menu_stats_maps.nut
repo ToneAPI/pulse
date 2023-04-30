@@ -54,13 +54,12 @@ void function OnViewStatsWeapons_Open()
 
 	Grid_InitPage( file.menu, file.gridData )
 	Hud_SetFocused( Grid_GetButtonForElementNumber( file.menu, 0 ) )
-	UpdateStatsForMap( file.allMaps[ 0 ] )
 }
 
 bool function MapButton_Init( var button, int elemNum )
 {
 	string mapName = file.allMaps[ elemNum ]
-
+	UpdateStatsForMap( mapName )
 	asset mapImage = GetMapImageForMapName( mapName )
 
 	var rui = Hud_GetRui( button )
@@ -141,8 +140,7 @@ void function UpdateStatsForMap( string mapName )
 
 	Hud_SetText( Hud_GetChild( file.menu, "WeaponName" ), GetMapDisplayName( mapName ) )
 
-	//Put this elsewhere, user needs to click twice for it to work
-	getGamemodeStatsFromToneAPI(mapName)
+	fetchGamemodeStatsFromToneAPI(mapName)
 
 	// Image
 	var imageElem = Hud_GetRui( Hud_GetChild( file.menu, "WeaponImageLarge" ) )
@@ -183,9 +181,9 @@ void function UpdateStatsForMap( string mapName )
 	array<PieChartEntry> modes
 	int enumCount = PersistenceGetEnumCount( "gameModes" )
 	table< string, array<int> > customGamemodeList = {
-		sns = [123, 12, 1, 255],
-		fw = [0, 1, 12, 255],
-		gg = [234, 32, 1, 255]
+		sns = [255, 178, 102, 255],
+		fw = [147, 204, 57, 255],
+		gg = [14, 87, 132, 255]
 	}
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
@@ -194,7 +192,6 @@ void function UpdateStatsForMap( string mapName )
 		{
 			float modePlayedTime = 0
 			modePlayedTime = float(globalToneAPIGamemodeMapData[mapName][modeName])
-			print("[PULSE] modePlayedTime " + modePlayedTime + " | modename " + modeName)
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
 			}
@@ -206,10 +203,8 @@ void function UpdateStatsForMap( string mapName )
 		{
 			float modePlayedTime = 0
 			modePlayedTime = float(globalToneAPIGamemodeMapData[mapName][key])
-			print("[PULSE] modePlayedTime " + modePlayedTime + " | modename " + key)
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, key, modePlayedTime, value)
-				print("CUSTOM GAMEMODE DATA FUNCTION CALLED")
 			}
 		}
 	}
