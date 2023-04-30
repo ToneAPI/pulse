@@ -17,7 +17,7 @@ global table globalToneAPIMapDeathData = {}
 global table globalToneAPIMapDistData = {}
 global table globalToneAPIMapKillData = {}
 global table globalToneAPIMapMDistData = {}
-global table globalToneAPIGamemodeData = {}
+global table< table > globalToneAPIGamemodeMapData = {}
 
 string prefix = "default"
 string HTTPrequestURL = "default"
@@ -103,14 +103,18 @@ void function getGamemodeStatsFromToneAPI(string mapName)
     getMapGamemodeStats.url = HTTPrequestURL + "/gamemodes"
     getMapGamemodeStats.queryParameters["map"] <- [mapNameSliced]
     getMapGamemodeStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
-    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response):(mapName)
     {
         table JSONForConversion = DecodeJSON(response.body)
-        foreach (var key, var value in JSONForConversion) {
+        table mapData = {}
+        foreach (var gamemode, var value in JSONForConversion) {
             table test = expect table(value)
-            globalToneAPIGamemodeData[string(key)] <- test.kills
+            mapData[string(gamemode)] <- test.kills
             mapGamemodeEntries += 1
         }
+
+        globalToneAPIGamemodeMapData[mapName] <- mapData
+
         print(prefix + "Map gamemode data has been processed with a total of " + string(mapGamemodeEntries) + " entries.")
     }
 

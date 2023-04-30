@@ -141,6 +141,7 @@ void function UpdateStatsForMap( string mapName )
 
 	Hud_SetText( Hud_GetChild( file.menu, "WeaponName" ), GetMapDisplayName( mapName ) )
 
+	//Put this elsewhere, user needs to click twice for it to work
 	getGamemodeStatsFromToneAPI(mapName)
 
 	// Image
@@ -189,25 +190,23 @@ void function UpdateStatsForMap( string mapName )
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
 		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
-		if ( modeName in globalToneAPIGamemodeData )
+		if ( mapName in globalToneAPIGamemodeMapData && modeName in globalToneAPIGamemodeMapData[mapName] )
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(globalToneAPIGamemodeData[modeName])
-			print(modePlayedTime)
+			modePlayedTime = float(globalToneAPIGamemodeMapData[mapName][modeName])
+			print("[PULSE] modePlayedTime " + modePlayedTime + " | modename " + modeName)
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
-				print (modes)
-				print (GameMode_GetName(modeName))
-				print (GetGameModeDisplayColor(modeName))
 			}
 		}
 	}
 	foreach (string key, array<int> value in customGamemodeList)
 	{
-		if ( key in globalToneAPIGamemodeData)
+		if ( mapName in globalToneAPIGamemodeMapData && key in globalToneAPIGamemodeMapData[mapName])
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(globalToneAPIGamemodeData[key])
+			modePlayedTime = float(globalToneAPIGamemodeMapData[mapName][key])
+			print("[PULSE] modePlayedTime " + modePlayedTime + " | modename " + key)
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, key, modePlayedTime, value)
 				print("CUSTOM GAMEMODE DATA FUNCTION CALLED")
