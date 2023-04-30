@@ -67,6 +67,6 @@ Found a bug? Make an issue on Github [here.](https://github.com/ToneAPI/pulse/is
 
 ## DISCLAIMER
 
-The Tone API is NOT used by every server, view a list supported servers on [the webclient.](https://toneapi.github.io/ToneAPI_webclient/)
+The Tone API is NOT used by every server, view a list of supported servers [here.](https://tone.sleepycat.date/v2/client/servers)
 
 Pulse is very much a W.I.P as of right now, features may be missing/nonfunctional.
