@@ -228,7 +228,7 @@ void function UpdateStatsForMap( string mapName )
 	PieChartData modesPlayedData
 	modesPlayedData.entries = modes
 	modesPlayedData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ModesPieChart", "#GAME_MODES_PLAYED", modesPlayedData )
+	SetPieChartData( file.menu, "ModesPieChart", "KILLS BY GAMEMODE", modesPlayedData )
 
 	array<string> fdMaps = GetPlaylistMaps( "fd" )
 
