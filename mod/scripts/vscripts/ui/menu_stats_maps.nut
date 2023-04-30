@@ -201,18 +201,18 @@ void function UpdateStatsForMap( string mapName )
 				print (GetGameModeDisplayColor(modeName))
 			}
 		}
-		foreach (string key, array<int> value in customGamemodeList)
-			if ( key in globalToneAPIGamemodeData)
-			{
-				int timesCalled = 0
-				float modePlayedTime = 0
-				modePlayedTime = float(globalToneAPIGamemodeData[key])
-				if ( modePlayedTime > 0 && timesCalled == 0) {
-					AddPieChartEntry( modes, key, modePlayedTime, value)
-					print("CUSTOM GAMEMODE DATA FUNCTION CALLED")
-					timesCalled += 1
-				}
+	}
+	foreach (string key, array<int> value in customGamemodeList)
+	{
+		if ( key in globalToneAPIGamemodeData)
+		{
+			float modePlayedTime = 0
+			modePlayedTime = float(globalToneAPIGamemodeData[key])
+			if ( modePlayedTime > 0 ) {
+				AddPieChartEntry( modes, key, modePlayedTime, value)
+				print("CUSTOM GAMEMODE DATA FUNCTION CALLED")
 			}
+		}
 	}
 	const MAX_MODE_ROWS = 8
 
