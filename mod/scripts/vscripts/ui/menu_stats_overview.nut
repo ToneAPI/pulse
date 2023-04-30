@@ -351,10 +351,12 @@ function UpdateViewStatsOverviewMenu()
 	titanMeleeKills += getWeaponKillsFromToneAPI("titan_punch_vanguard")
 	titanMeleeKills += getWeaponKillsFromToneAPI("auto_titan_melee")
 
+	var titanExecutions = getWeaponKillsFromToneAPI("titan_execution")
+
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue0" ), string( GetPlayerStatInt( player, "kills_stats", "pilotKillsAsTitan" ) ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue1" ), string( GetPlayerStatInt( player, "kills_stats", "titanKillsAsTitan" ) ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue2" ), string( titanMeleeKills ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue3" ), string( GetPlayerStatInt( player, "kills_stats", "titanMeleePilot" ) ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue2" ), string( titanExecutions ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue3" ), string( titanMeleeKills ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue4" ), string( getWeaponKillsFromToneAPI("damagedef_titan_step") ) )
 }
 
