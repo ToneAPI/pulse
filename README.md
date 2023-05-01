@@ -26,8 +26,8 @@ Found a bug? Make an issue on Github [here.](https://github.com/ToneAPI/pulse/is
 
   |        Name        | Description                                                                                                                                                                        |
   |--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-  | Pilots             |Shows **ALL KILLS ACCUMULATED BY PLAYER.**<sup>1</sup> This includes Titan kills and kills as Titans, we will display them in their respective tab with an upcoming Tone API update.|
-  | Titans             |Non-functional, see line above. (this will now be referred to as <sup>1</sup>)|
+  | Pilots             |Shows **ALL KILLS** accumulated by player as Pilot. Differentiating Pilot and Titan kills will come in a later Tone API update.|
+  | Titans             |Non-functional, see line above.|
   | AI kills           |Non-functional, Tone API does not collect AI kill data.|
   | Pilot melee kills  |Shows only melee kills accumulated by player as Pilot.|
   | Pilot executions   |Shows only executions accumulated by player as Pilot.|
@@ -36,8 +36,8 @@ Found a bug? Make an issue on Github [here.](https://github.com/ToneAPI/pulse/is
 
   |        Name        | Description                                          |
   |--------------------|------------------------------------------------------|
-  | Pilots             |Non-functional, see <sup>1</sup>.|
-  | Titans             |Non-functional, see <sup>1</sup>.|
+  | Pilots             |Shows **ALL KILLS** accumulated by player as Pilot. Differentiating Pilot and Titan kills will come in a later Tone API update.|
+  | Titans             |Non-functional, see line above.|
   | Titan executions   |Shows only executions accumulated by player as Titan.|
   | Pilots meleed      |Shows only melee kills accumulated by player as Titan.|
   | Pilot roadkills    |Shows only roadkills accumulated by player as Titan.|
