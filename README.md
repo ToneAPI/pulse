@@ -4,7 +4,8 @@ Pulse is a clientside mod for [TF|2 + Northstar](https://github.com/R2Northstar/
 
 ## Currently, features include:
 - mostly functional `Overview` tab,
-- Pilot weapon kills displayed in `Pilot Weapons` tab
+- functional `Time` tab,
+- Pilot weapon data displayed in `Pilot Weapons` tab,
 - Titan kills displayed in `Titans` tab,
 - functional `Maps` tab,
 - real-time updates.
@@ -26,7 +27,7 @@ Found a bug? Make an issue on Github [here.](https://github.com/ToneAPI/pulse/is
   |        Name        | Description                                                                                                                                                                        |
   |--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
   | Pilots             |Shows **ALL KILLS ACCUMULATED BY PLAYER.**<sup>1</sup> This includes Titan kills and kills as Titans, we will display them in their respective tab with an upcoming Tone API update.|
-  | Titans             |Non-functional, see <sup>1</sup>.|
+  | Titans             |Non-functional, see line above. (this will now be referred to as <sup>1</sup>)|
   | AI kills           |Non-functional, Tone API does not collect AI kill data.|
   | Pilot melee kills  |Shows only melee kills accumulated by player as Pilot.|
   | Pilot executions   |Shows only executions accumulated by player as Pilot.|
@@ -43,9 +44,16 @@ Found a bug? Make an issue on Github [here.](https://github.com/ToneAPI/pulse/is
 
 - Upper statbox values have been zeroed out, these don't yet work and are set to 0 to avoid confusion.
 
+### `Time`
+
+- Kills by Class shows kills by Pilot and Titan on a piechart.
+- Kills by Titan shows kills by all Titan classes on a piechart.
+- Kills by Gamemode shows kills on each gamemode played on a piechart.
+
 ### `Pilot Weapons`
 
 - shows total accumulated kills per weapon under Total Kills.
+- shows deaths with given weapon equipped under Deaths with Weapon.
 
 ### `Titans`
 
