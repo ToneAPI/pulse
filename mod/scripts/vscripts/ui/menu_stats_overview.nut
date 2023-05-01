@@ -5,9 +5,12 @@ global function InitViewStatsOverviewMenu
 struct
 {
 	var menu
+	array<ItemDisplayData> allTitans
+	table<string, array<string> > titanStatLoadout
 } file
 
 const MAX_DOTS_ON_GRAPH = 10
+table <string, int> titanKillData = {}
 
 const IMAGE_TITAN_STRYDER = $"ui/menu/personal_stats/ps_titan_icon_stryder"
 const IMAGE_TITAN_ATLAS = $"ui/menu/personal_stats/ps_titan_icon_atlas"
@@ -27,9 +30,41 @@ void function InitViewStatsOverviewMenu()
 	AddMenuFooterOption( menu, BUTTON_B, "#B_BUTTON_BACK", "#BACK" )
 }
 
+void function GetTitanKills( string titanName )
+{
+	file.allTitans = GetVisibleItemsOfType( eItemTypes.TITAN )
+	var dataTable = GetDataTable( $"datatable/titan_properties.rpak" )
+	
+	foreach ( titan in file.allTitans )
+	{
+		file.titanStatLoadout[ titan.ref ] <- []
+
+		int row = GetDataTableRowMatchingStringValue( dataTable, GetDataTableColumnByName( dataTable, "titanRef" ), titan.ref )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "primary" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "ordnance" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "special" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "antirodeo" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "coreAbility" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "melee" ) ) )
+	}
+
+	foreach ( weaponRef in file.titanStatLoadout[ titanName ])
+	{
+		titanKillData[weaponRef] <- getWeaponKillsFromToneAPI(weaponRef)
+	}
+}
+
 void function OnStatsOverview_Open()
 {
 	UI_SetPresentationType( ePresentationType.NO_MODELS )
+
+	GetTitanKills("ion")
+	GetTitanKills("scorch")
+	GetTitanKills("northstar")
+	GetTitanKills("ronin")
+	GetTitanKills("tone")
+	GetTitanKills("legion")
+	GetTitanKills("vanguard")
 
 	UpdateViewStatsOverviewMenu()
 }
@@ -266,6 +301,22 @@ function UpdateViewStatsOverviewMenu()
 		totalPilotDeaths += value
 	}
 
+	var killsAsPilot = 0
+	foreach (var key, var value in globalToneAPIKillData) {
+		if (key in titanKillData) {
+			continue
+		} else {
+			killsAsPilot += getWeaponKillsFromToneAPI(string(key))
+		}
+	}
+
+	var killsAsTitan = 0
+	foreach (var key, var value in globalToneAPIKillData) {
+		if (key in titanKillData) {
+			killsAsTitan += titanKillData[string(key)]
+		}
+	}
+
 	float kval = float(totalPilotKills)
 	float dval = float(totalPilotDeaths)
 	float kdval = float(int((kval / dval)*100))/100
@@ -330,7 +381,7 @@ function UpdateViewStatsOverviewMenu()
 	PlotKDPointsOnGraph( file.menu, 1, kdratiopvp_match, lifetimeAveragePVP )
 
 	/////////////////////////
-	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue0" ), string( totalPilotKills ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue0" ), string( killsAsPilot ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue1" ), string( GetPlayerStatInt( player, "kills_stats", "titanKillsAsPilot" ) ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue2" ), string( GetPlayerStatInt( player, "kills_stats", "totalNPC" ) ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue3" ), string( getWeaponKillsFromToneAPI("pilot_emptyhanded") ) )
@@ -349,7 +400,7 @@ function UpdateViewStatsOverviewMenu()
 
 	var titanExecutions = getWeaponKillsFromToneAPI("titan_execution")
 
-	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue0" ), string( GetPlayerStatInt( player, "kills_stats", "pilotKillsAsTitan" ) ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue0" ), string( killsAsTitan ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue1" ), string( GetPlayerStatInt( player, "kills_stats", "titanKillsAsTitan" ) ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue2" ), string( titanExecutions ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue3" ), string( titanMeleeKills ) )
