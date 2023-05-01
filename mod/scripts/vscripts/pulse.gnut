@@ -1,6 +1,7 @@
 global function pulseInit
 global function GetWeaponStatsFromToneAPI
 global function GetMapStatsFromToneAPI
+global function GetGamemodeStatsFromToneAPI
 global function getWeaponKillsFromToneAPI
 global function getNemesisWeaponFromToneAPI
 global function getDWEFromToneAPI
@@ -17,12 +18,14 @@ global table globalToneAPIMapDeathData = {}
 global table globalToneAPIMapDistData = {}
 global table globalToneAPIMapKillData = {}
 global table globalToneAPIMapMDistData = {}
+global table globalToneAPIGamemodeData = {}
 global table< table > globalToneAPIGamemodeMapData = {}
 
 string prefix = "default"
 string HTTPrequestURL = "default"
 int weaponEntries = 0
 int mapEntries = 0
+int gamemodeEntries = 0
 int mapGamemodeEntries = 0
 
 void function pulseInit()
@@ -91,6 +94,34 @@ void function GetMapStatsFromToneAPI()
     }
 
     NSHttpRequest(getMapStats, onSuccess, onFailure)
+}
+
+void function GetGamemodeStatsFromToneAPI()
+{
+    print(prefix + "Getting gamemode data...")
+    gamemodeEntries = 0
+    HttpRequest getGamemodeStats
+    getGamemodeStats.method = HttpRequestMethod.GET
+    getGamemodeStats.url = HTTPrequestURL + "/gamemodes"
+    getGamemodeStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        print(prefix + "Gamemode data received, processing...")
+        table JSONForConversion = DecodeJSON(response.body)
+        foreach (var key, var value in JSONForConversion) {
+            table test = expect table(value)
+            globalToneAPIGamemodeData[string(key)] <- test.kills
+            gamemodeEntries += 1
+        }
+        print(prefix + "Gamemode data has been processed with a total of " + string(gamemodeEntries) + " entries.")
+    }
+
+    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        print(prefix + "Encountered an error getting gamemode data...")
+    }
+
+    NSHttpRequest(getGamemodeStats, onSuccess, onFailure)
 }
 
 void function fetchGamemodeStatsFromToneAPI(string mapName)

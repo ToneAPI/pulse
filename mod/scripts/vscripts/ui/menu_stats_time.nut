@@ -7,6 +7,8 @@ const MAX_MODE_ROWS = 8
 struct
 {
 	var menu
+	array<ItemDisplayData> allTitans
+	table<string, array<string> > titanStatLoadout
 } file
 
 void function InitViewStatsTimeMenu()
@@ -23,7 +25,33 @@ void function OnStatsTime_Open()
 {
 	UI_SetPresentationType( ePresentationType.NO_MODELS )
 
+	file.allTitans = GetVisibleItemsOfType( eItemTypes.TITAN )
+	var dataTable = GetDataTable( $"datatable/titan_properties.rpak" )
+
+	foreach ( titan in file.allTitans )
+	{
+		file.titanStatLoadout[ titan.ref ] <- []
+
+		int row = GetDataTableRowMatchingStringValue( dataTable, GetDataTableColumnByName( dataTable, "titanRef" ), titan.ref )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "primary" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "ordnance" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "special" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "antirodeo" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "coreAbility" ) ) )
+		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "melee" ) ) )
+	}
+
 	UpdateViewStatsTimeMenu()
+}
+
+float function GetTitanKills( string titanName)
+{
+	float weaponKills = 0
+	foreach ( weaponRef in file.titanStatLoadout[ titanName ])
+	{
+		weaponKills += float(getWeaponKillsFromToneAPI(weaponRef))
+	}
+	return weaponKills
 }
 
 void function UpdateViewStatsTimeMenu()
@@ -33,11 +61,32 @@ void function UpdateViewStatsTimeMenu()
 		return
 
 	//#########################################
+	float killsAsTitan = 0
+	float killsAsIon = GetTitanKills( "ion" )
+	killsAsTitan += killsAsIon
+	float killsAsScorch = GetTitanKills( "scorch" )
+	killsAsTitan += killsAsScorch
+	float killsAsNorthstar = GetTitanKills( "northstar" )
+	killsAsTitan += killsAsNorthstar
+	float killsAsRonin = GetTitanKills( "ronin" )
+	killsAsTitan += killsAsRonin
+	float killsAsTone = GetTitanKills( "tone" )
+	killsAsTitan += killsAsTone
+	float killsAsLegion = GetTitanKills( "legion" )
+	killsAsTitan += killsAsLegion
+	float killsAsMonarch = GetTitanKills( "vanguard" )
+	killsAsTitan += killsAsMonarch
+	//#########################################
 	// 		  Time By Class Pie Chart
 	//#########################################
-
-	float hoursAsPilot = GetPlayerStatFloat( player, "time_stats", "hours_as_pilot" )
-	float hoursAsTitan = GetPlayerStatFloat( player, "time_stats", "hours_as_titan" )
+	
+	var totalPilotKills = 0
+	
+	foreach (var key, var value in globalToneAPIKillData) {
+		totalPilotKills += value
+	}
+	float hoursAsPilot = float(totalPilotKills)
+	float hoursAsTitan = killsAsTitan
 
 	array<PieChartEntry> classes
 
@@ -52,51 +101,41 @@ void function UpdateViewStatsTimeMenu()
 	PieChartData classTimeData
 	classTimeData.entries = classes
 	classTimeData.labelColor = [ 255, 255, 255, 255 ]
-	classTimeData.timeBased = true
-	SetPieChartData( file.menu, "ClassPieChart", "#STATS_HEADER_TIME_BY_CLASS", classTimeData )
+	SetPieChartData( file.menu, "ClassPieChart", "KILLS BY CLASS", classTimeData )
 
 	//#########################################
 	// 		 Time By Chassis Pie Chart
 	//#########################################
 
-	float hoursAsIon = GetPlayerStatFloat( player, "time_stats", "hours_as_titan_ion" )
-	float hoursAsScorch = GetPlayerStatFloat( player, "time_stats", "hours_as_titan_scorch" )
-	float hoursAsNorthstar = GetPlayerStatFloat( player, "time_stats", "hours_as_titan_northstar" )
-	float hoursAsRonin = GetPlayerStatFloat( player, "time_stats", "hours_as_titan_ronin" )
-	float hoursAsTone = GetPlayerStatFloat( player, "time_stats", "hours_as_titan_tone" )
-	float hoursAsLegion = GetPlayerStatFloat( player, "time_stats", "hours_as_titan_legion" )
-	float hoursAsMonarch = GetPlayerStatFloat( player, "time_stats", "hours_as_titan_vanguard" )
-
 	array<PieChartEntry> titans
 
-	if ( hoursAsIon > 0 )
-		AddPieChartEntry( titans, "#TITAN_ION", hoursAsIon, [200, 40, 40, 255] )
+	if ( killsAsIon > 0 )
+		AddPieChartEntry( titans, "#TITAN_ION", killsAsIon, [200, 40, 40, 255] )
 
-	if ( hoursAsScorch > 0 )
-		AddPieChartEntry( titans, "#TITAN_SCORCH", hoursAsScorch, [223, 94, 0, 255] )
+	if ( killsAsScorch > 0 )
+		AddPieChartEntry( titans, "#TITAN_SCORCH", killsAsScorch, [223, 94, 0, 255] )
 
-	if ( hoursAsNorthstar > 0 )
-		AddPieChartEntry( titans, "#TITAN_NORTHSTAR", hoursAsNorthstar, [61, 117, 193, 255] )
+	if ( killsAsNorthstar > 0 )
+		AddPieChartEntry( titans, "#TITAN_NORTHSTAR", killsAsNorthstar, [61, 117, 193, 255] )
 
-	if ( hoursAsRonin > 0 )
-		AddPieChartEntry( titans, "#TITAN_RONIN", hoursAsRonin, [207, 191, 59, 255] )
+	if ( killsAsRonin > 0 )
+		AddPieChartEntry( titans, "#TITAN_RONIN", killsAsRonin, [207, 191, 59, 255] )
 
-	if ( hoursAsTone > 0 )
-		AddPieChartEntry( titans, "#TITAN_TONE", hoursAsTone, [88, 172, 67, 255] )
+	if ( killsAsTone > 0 )
+		AddPieChartEntry( titans, "#TITAN_TONE", killsAsTone, [88, 172, 67, 255] )
 
-	if ( hoursAsLegion > 0 )
-		AddPieChartEntry( titans, "#TITAN_LEGION", hoursAsLegion, [46, 188, 180, 255] )
+	if ( killsAsLegion > 0 )
+		AddPieChartEntry( titans, "#TITAN_LEGION", killsAsLegion, [46, 188, 180, 255] )
 
-	if ( hoursAsMonarch > 0 )
-		AddPieChartEntry( titans, "#TITAN_VANGUARD", hoursAsMonarch, [151, 71, 175, 255] )
+	if ( killsAsMonarch > 0 )
+		AddPieChartEntry( titans, "#TITAN_VANGUARD", killsAsMonarch, [151, 71, 175, 255] )
 
 	titans.sort( ComparePieChartEntryValues )
 
 	PieChartData chassisTimeData
 	chassisTimeData.entries = titans
 	chassisTimeData.labelColor = [ 255, 255, 255, 255 ]
-	chassisTimeData.timeBased = true
-	SetPieChartData( file.menu, "ChassisPieChart", "#STATS_HEADER_TIME_BY_CHASSIS", chassisTimeData )
+	SetPieChartData( file.menu, "ChassisPieChart", "KILLS BY TITAN", chassisTimeData )
 
 	//#########################################
 	// 		  Time By Mode Pie Chart
@@ -105,33 +144,40 @@ void function UpdateViewStatsTimeMenu()
 	array<string> gameModesArray = GetPersistenceEnumAsArray( "gameModes" )
 
 	array<PieChartEntry> modes
-	foreach ( modeName in gameModesArray )
-	{
-		string gameModePlaysVar = GetStatVar( "game_stats", "mode_played", modeName )
-		int playCount = player.GetPersistentVarAsInt( gameModePlaysVar )
-		if ( playCount > 0 )
-			AddPieChartEntry( modes, GameMode_GetName( modeName ), float( playCount ), GameMode_GetColor( modeName ) )
+	int enumCount = PersistenceGetEnumCount( "gameModes" )
+	table< string, array<int> > customGamemodeList = {
+		sns = [255, 178, 102, 255],
+		fw = [147, 204, 57, 255],
+		gg = [14, 87, 132, 255]
 	}
-
-	if ( modes.len() > 0 )
+	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
-		modes.sort( ComparePieChartEntryValues )
-
-		if ( modes.len() > MAX_MODE_ROWS )
+		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
+		if ( modeName in globalToneAPIGamemodeData )
 		{
-			float otherValue
-			for ( int i = MAX_MODE_ROWS-1; i < modes.len() ; i++ )
-				otherValue += modes[i].numValue
-
-			modes.resize( MAX_MODE_ROWS-1 )
-			AddPieChartEntry( modes, "#GAMEMODE_OTHER", otherValue, [127, 127, 127, 255] )
+			float modePlayedTime = 0
+			modePlayedTime = float(globalToneAPIGamemodeData[modeName])
+			if ( modePlayedTime > 0 ) {
+				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
+			}
+		}
+	}
+	foreach (string key, array<int> value in customGamemodeList)
+	{
+		if ( key in globalToneAPIGamemodeData)
+		{
+			float modePlayedTime = 0
+			modePlayedTime = float(globalToneAPIGamemodeData[key])
+			if ( modePlayedTime > 0 ) {
+				AddPieChartEntry( modes, key, modePlayedTime, value)
+			}
 		}
 	}
 
 	PieChartData modesPlayedData
 	modesPlayedData.entries = modes
 	modesPlayedData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ModesPieChart", "#GAME_MODES_PLAYED", modesPlayedData )
+	SetPieChartData( file.menu, "ModesPieChart", "KILLS BY GAMEMODE", modesPlayedData )
 
 	//#########################################
 	// 				Time Stats
