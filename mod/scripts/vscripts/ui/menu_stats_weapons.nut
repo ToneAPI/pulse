@@ -183,5 +183,5 @@ void function UpdateStatsForWeapon( string weaponRef )
 	SetStatsLabelValue( file.menu, "KillsValue0", 				getWeaponKillsFromToneAPI(weaponRef) )
 	SetStatsLabelValue( file.menu, "KillsValue1", 				getWeaponKillsFromToneAPI(weaponRef) )
 	SetStatsLabelValue( file.menu, "KillsValue2", 				GetPlayerStatInt( player, "weapon_kill_stats", "titansTotal", weaponRef ) )
-	SetStatsLabelValue( file.menu, "KillsValue3", 				GetPlayerStatInt( player, "weapon_kill_stats", "ai", weaponRef ) )
+	SetStatsLabelValue( file.menu, "KillsValue3", 				getDWEFromToneAPI(weaponRef))
 }

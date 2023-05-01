@@ -262,19 +262,15 @@ function UpdateViewStatsOverviewMenu()
 
 	var totalPilotDeaths = 0
 
-	foreach (var key, var value in globalToneAPIDWEData) {
+	foreach (var key, var value in globalToneAPIDeathData) {
 		totalPilotDeaths += value
 	}
 
-	float kdval = float(totalPilotKills) / float(totalPilotDeaths)
+	float kval = float(totalPilotKills)
+	float dval = float(totalPilotDeaths)
+	float kdval = float(int((kval / dval)*100))/100
 
-	local lifetimeAverage = kdval
-	local formattedLifetimeAverage
-	if ( lifetimeAverage % 1 == 0 )
-		formattedLifetimeAverage = format( "%.0f", lifetimeAverage )
-	else
-		formattedLifetimeAverage = format( "%.1f", lifetimeAverage )
-	SetStatsLabelValue( file.menu, "LifetimeAverageValue", [ "#STATS_KD_VALUE", formattedLifetimeAverage ] )
+	SetStatsLabelValue( file.menu, "LifetimeAverageValue", [ "#STATS_KD_VALUE", kdval ] )
 
 	// Lifetime (PVP)
 	local lifetimeAveragePVP = player.GetPersistentVar( "kdratio_lifetime_pvp" ).tofloat()
@@ -313,7 +309,7 @@ function UpdateViewStatsOverviewMenu()
 	else
 		kdratio_match_average = format( "%.1f", kdratio_match_average )
 	SetStatsLabelValue( file.menu, "Last10GamesValue", [ "#STATS_KD_VALUE", kdratio_match_average ] )
-	PlotKDPointsOnGraph( file.menu, 0, kdratio_match, lifetimeAverage )
+	PlotKDPointsOnGraph( file.menu, 0, kdratio_match, kdval )
 
 	// Last 10 (PVP)
 	local kdratiopvp_match_sum = 0
