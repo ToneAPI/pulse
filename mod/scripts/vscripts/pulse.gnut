@@ -41,7 +41,7 @@ void function pulseInit()
     void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
     {
         table JSONDecoded = DecodeJSON(response.body)
-        if ((JSONDecoded["Major"] == GetConVarString("MajorVersion")) && (JSONDecoded["Minor"] == GetConVarString("MinorVersion")) && (JSONDecoded["Patch"] == GetConVarString("PatchVersion"))) {
+        if (JSONDecoded["Major"] == GetConVarString("MajorVersion") && JSONDecoded["Minor"] == GetConVarString("MinorVersion") && JSONDecoded["Patch"] == GetConVarString("PatchVersion")) {
             print(prefix + "v1.2.1 has been loaded and is up to date.")
         } else {
             print(prefix + "v1.2.1 has been loaded. Recommend updating to latest version: v" + JSONDecoded["Major"] + "." + JSONDecoded["Minor"] + "." + JSONDecoded["Patch"] + ".")
