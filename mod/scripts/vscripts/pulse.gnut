@@ -1,5 +1,6 @@
 global function pulseInit
 global function GetWeaponStatsFromToneAPI
+global function GetGlobalDataFromToneAPI
 global function GetMapStatsFromToneAPI
 global function GetGamemodeStatsFromToneAPI
 global function getWeaponKillsFromToneAPI
@@ -19,6 +20,8 @@ global table globalToneAPIMapDistData = {}
 global table globalToneAPIMapKillData = {}
 global table globalToneAPIMapMDistData = {}
 global table globalToneAPIGamemodeData = {}
+global table globalToneAPIAllPlayerKillData = {}
+global table globalToneAPIAllPlayerDeathData = {}
 global table< table > globalToneAPIGamemodeMapData = {}
 
 string prefix = "default"
@@ -63,6 +66,35 @@ void function GetWeaponStatsFromToneAPI()
     }
 
     NSHttpRequest(getWeaponStats, onSuccess, onFailure)
+}
+
+void function GetGlobalDataFromToneAPI()
+{
+    print(prefix + "Getting global data...")
+    weaponEntries = 0
+    HttpRequest getGlobalStats
+    getGlobalStats.method = HttpRequestMethod.GET
+    getGlobalStats.url = HTTPrequestURL + "/weapons"
+    getGlobalStats.queryParameters["player"] <- ["!" + NSGetLocalPlayerUID()]
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        print(prefix + "Global data received, processing...")
+        table JSONForConversion = DecodeJSON(response.body)
+        foreach (var key, var value in JSONForConversion) {
+            table test = expect table(value)
+            globalToneAPIAllPlayerKillData[string(key)] <- test.kills
+            globalToneAPIAllPlayerDeathData[string(key)] <- test.deaths
+            weaponEntries += 1
+        }
+        print(prefix + "Global data has been processed with a total of " + string(weaponEntries) + " entries.")
+    }
+
+    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        print(prefix + "Encountered an error getting global data...")
+    }
+
+    NSHttpRequest(getGlobalStats, onSuccess, onFailure)
 }
 
 void function GetMapStatsFromToneAPI()
