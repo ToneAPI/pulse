@@ -21,7 +21,7 @@ Found a bug? Make an issue on GitHub [here.](https://github.com/ToneAPI/pulse/is
 - Most Kills - shows the weapon with most accumulated kills.
 - Nemesis Weapon - shows the weapon that has killed you the most.
 - Most Effective - shows weapon with the highest K/D ratio.
-- Kill/Death Ratio - shows the overall K/D ratio of player. (the two line graphs "Lifetime Avg." and "Lifetime Avg. vs. Players" don't work.)
+- Kill/Death Ratio - shows the overall K/D ratio of player compared to global K/D.
 - Kills as Pilot - shows general kill data for player as Pilot, visualised in the table below:
 
   |        Name        | Description                                                                                                                                                                        |
