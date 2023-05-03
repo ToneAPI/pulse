@@ -12,7 +12,7 @@ Pulse is a clientside mod for [TF|2 + Northstar](https://github.com/R2Northstar/
 
 Want to know what we have planned for future updates? See [here.](https://github.com/ToneAPI/pulse/projects?query=is%3Aopen)
 
-Found a bug? Make an issue on Github [here.](https://github.com/ToneAPI/pulse/issues/new)
+Found a bug? Make an issue on GitHub [here.](https://github.com/ToneAPI/pulse/issues/new)
 
 <details>
 <summary>Features, more in-depth:</summary>
@@ -36,7 +36,7 @@ Found a bug? Make an issue on Github [here.](https://github.com/ToneAPI/pulse/is
 
   |        Name        | Description                                          |
   |--------------------|------------------------------------------------------|
-  | Pilots             |Shows **ALL KILLS** accumulated by player as Pilot. Differentiating Pilot and Titan kills will come in a later Tone API update.|
+  | Pilots             |Shows **ALL KILLS** accumulated by player as Titan. Differentiating Pilot and Titan kills will come in a later Tone API update.|
   | Titans             |Non-functional, see line above.|
   | Titan executions   |Shows only executions accumulated by player as Titan.|
   | Pilots meleed      |Shows only melee kills accumulated by player as Titan.|

@@ -46,6 +46,7 @@ void function OnViewStats_Open()
 	fetchGamemodeStatsFromToneAPI(mapName)
 	}
 	GetWeaponStatsFromToneAPI()
+	GetGlobalDataFromToneAPI()
 	GetMapStatsFromToneAPI()
 	GetGamemodeStatsFromToneAPI()
 	UI_SetPresentationType( ePresentationType.DEFAULT )

@@ -1,5 +1,6 @@
 global function pulseInit
 global function GetWeaponStatsFromToneAPI
+global function GetGlobalDataFromToneAPI
 global function GetMapStatsFromToneAPI
 global function GetGamemodeStatsFromToneAPI
 global function getWeaponKillsFromToneAPI
@@ -19,10 +20,13 @@ global table globalToneAPIMapDistData = {}
 global table globalToneAPIMapKillData = {}
 global table globalToneAPIMapMDistData = {}
 global table globalToneAPIGamemodeData = {}
+global table globalToneAPIAllPlayerKillData = {}
+global table globalToneAPIAllPlayerDeathData = {}
 global table< table > globalToneAPIGamemodeMapData = {}
 
 string prefix = "default"
 string HTTPrequestURL = "default"
+string currentVersion = "default"
 int weaponEntries = 0
 int mapEntries = 0
 int gamemodeEntries = 0
@@ -30,9 +34,26 @@ int mapGamemodeEntries = 0
 
 void function pulseInit()
 {
-    HTTPrequestURL = GetConVarString("ToneURL")
     prefix = "\x1b[38;2;255;178;102m[PULSE]\x1b[0m "
-    print(prefix + "v1.2.0 has been loaded.")
+    HTTPrequestURL = GetConVarString("ToneURL")
+    currentVersion = "v" + GetConVarString("MajorVersion") + "." + GetConVarString("MinorVersion") + "." + GetConVarString("PatchVersion")
+    HttpRequest getVersion
+    getVersion.method = HttpRequestMethod.GET
+    getVersion.url = GetConVarString("VersionURL")
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        table JSONDecoded = DecodeJSON(response.body)
+        if (JSONDecoded["Major"] == GetConVarString("MajorVersion") && JSONDecoded["Minor"] == GetConVarString("MinorVersion") && JSONDecoded["Patch"] == GetConVarString("PatchVersion")) {
+            print(prefix + currentVersion + " has been loaded and is up to date.")
+        } else {
+            print(prefix + currentVersion + " has been loaded. Recommend updating to latest version: v" + JSONDecoded["Major"] + "." + JSONDecoded["Minor"] + "." + JSONDecoded["Patch"] + ".")
+        }
+    }
+    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        print(prefix + currentVersion + " has been loaded and has encountered an error getting latest version data.")
+    }
+    NSHttpRequest(getVersion, onSuccess, onFailure)
 }
 
 void function GetWeaponStatsFromToneAPI()
@@ -63,6 +84,35 @@ void function GetWeaponStatsFromToneAPI()
     }
 
     NSHttpRequest(getWeaponStats, onSuccess, onFailure)
+}
+
+void function GetGlobalDataFromToneAPI()
+{
+    print(prefix + "Getting global data...")
+    weaponEntries = 0
+    HttpRequest getGlobalStats
+    getGlobalStats.method = HttpRequestMethod.GET
+    getGlobalStats.url = HTTPrequestURL + "/weapons"
+    getGlobalStats.queryParameters["player"] <- ["!" + NSGetLocalPlayerUID()]
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        print(prefix + "Global data received, processing...")
+        table JSONForConversion = DecodeJSON(response.body)
+        foreach (var key, var value in JSONForConversion) {
+            table test = expect table(value)
+            globalToneAPIAllPlayerKillData[string(key)] <- test.kills
+            globalToneAPIAllPlayerDeathData[string(key)] <- test.deaths
+            weaponEntries += 1
+        }
+        print(prefix + "Global data has been processed with a total of " + string(weaponEntries) + " entries.")
+    }
+
+    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        print(prefix + "Encountered an error getting global data...")
+    }
+
+    NSHttpRequest(getGlobalStats, onSuccess, onFailure)
 }
 
 void function GetMapStatsFromToneAPI()
