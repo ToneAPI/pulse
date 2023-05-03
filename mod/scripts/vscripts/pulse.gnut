@@ -33,9 +33,25 @@ int mapGamemodeEntries = 0
 
 void function pulseInit()
 {
-    HTTPrequestURL = GetConVarString("ToneURL")
     prefix = "\x1b[38;2;255;178;102m[PULSE]\x1b[0m "
-    print(prefix + "v1.2.0 has been loaded.")
+    HTTPrequestURL = GetConVarString("ToneURL")
+    HttpRequest getVersion
+    getVersion.method = HttpRequestMethod.GET
+    getVersion.url = GetConVarString("VersionURL")
+    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        table JSONDecoded = DecodeJSON(response.body)
+        if ((JSONDecoded["Major"] == GetConVarString("MajorVersion")) && (JSONDecoded["Minor"] == GetConVarString("MinorVersion")) && (JSONDecoded["Patch"] == GetConVarString("PatchVersion"))) {
+            print(prefix + "v1.2.1 has been loaded and is up to date.")
+        } else {
+            print(prefix + "v1.2.1 has been loaded. Recommend updating to latest version: v" + JSONDecoded["Major"] + "." + JSONDecoded["Minor"] + "." + JSONDecoded["Patch"] + ".")
+        }
+    }
+    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        print(prefix + "v1.2.1 has been loaded and has encountered an error getting latest version data.")
+    }
+    NSHttpRequest(getVersion, onSuccess, onFailure)
 }
 
 void function GetWeaponStatsFromToneAPI()
