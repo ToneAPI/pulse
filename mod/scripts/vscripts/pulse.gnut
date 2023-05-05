@@ -1,8 +1,5 @@
 global function pulseInit
-global function GetWeaponStatsFromToneAPI
-global function GetGlobalDataFromToneAPI
-global function GetMapStatsFromToneAPI
-global function GetGamemodeStatsFromToneAPI
+global function GetStatsFromToneAPI
 global function getFromToneAPI
 global function fetchGamemodeStatsFromToneAPI
 
@@ -17,6 +14,8 @@ global table globalToneAPIGamemodeData = {}
 global table globalToneAPIAllPlayerKillData = {}
 global table globalToneAPIAllPlayerDeathData = {}
 global table< table > globalToneAPIGamemodeMapData = {}
+array <string> allHttpRequests = ["/weapons", "/weapons", "/maps", "/gamemodes"]
+array <int> isGlobal = [0, 1, 0, 0]
 
 string prefix = "default"
 string HTTPrequestURL = "default"
@@ -54,122 +53,47 @@ void function pulseInit()
     NSHttpRequest(getVersion, onSuccess, onFailure)
 }
 
-void function GetWeaponStatsFromToneAPI()
+void function GetStatsFromToneAPI()
 {
-    print(prefix + "Getting kill data...")
-    weaponEntries = 0
-    HttpRequest getWeaponStats
-    getWeaponStats.method = HttpRequestMethod.GET
-    getWeaponStats.url = HTTPrequestURL + "/weapons"
-    getWeaponStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
-    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
-    {
-        print(prefix + "Kill data received, processing...")
-        table JSONForConversion = DecodeJSON(response.body)
-        foreach (var key, var value in JSONForConversion) {
-            table test = expect table(value)
-            globalToneAPIKillData[string(key)] <- test.kills
-            globalToneAPIDeathData[string(key)] <- test.deaths
-            globalToneAPIDWEData[string(key)] <- test.deaths_while_equipped
-            weaponEntries += 1
+    for (int i; i < allHttpRequests.len(); i++) {
+        HttpRequest getStats
+        getStats.method = HttpRequestMethod.GET
+        getStats.url = HTTPrequestURL + allHttpRequests[i]
+        if (isGlobal[i] == 1) {
+            getStats.queryParameters["player"] <- ["!" + NSGetLocalPlayerUID()]
+        } else {
+            getStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
         }
-        print(prefix + "Kill data has been processed with a total of " + string(weaponEntries) + " entries.")
-    }
-
-    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
-    {
-        print(prefix + "Encountered an error getting kill data...")
-    }
-
-    NSHttpRequest(getWeaponStats, onSuccess, onFailure)
-}
-
-void function GetGlobalDataFromToneAPI()
-{
-    print(prefix + "Getting global data...")
-    weaponEntries = 0
-    HttpRequest getGlobalStats
-    getGlobalStats.method = HttpRequestMethod.GET
-    getGlobalStats.url = HTTPrequestURL + "/weapons"
-    getGlobalStats.queryParameters["player"] <- ["!" + NSGetLocalPlayerUID()]
-    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
-    {
-        print(prefix + "Global data received, processing...")
-        table JSONForConversion = DecodeJSON(response.body)
-        foreach (var key, var value in JSONForConversion) {
-            table test = expect table(value)
-            globalToneAPIAllPlayerKillData[string(key)] <- test.kills
-            globalToneAPIAllPlayerDeathData[string(key)] <- test.deaths
-            weaponEntries += 1
+        void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (i)
+        {
+            table DecodedJSON = DecodeJSON(response.body)
+            foreach (var key, var value in DecodedJSON) {
+                table test = expect table(value)
+                switch (i) {
+                    case 0:
+                        globalToneAPIKillData[string(key)] <- test.kills
+                        globalToneAPIDeathData[string(key)] <- test.deaths
+                        globalToneAPIDWEData[string(key)] <- test.deaths_while_equipped
+                    case 1:
+                        globalToneAPIAllPlayerKillData[string(key)] <- test.kills
+                        globalToneAPIAllPlayerDeathData[string(key)] <- test.deaths
+                    case 2:
+                        globalToneAPIMapKillData[string(key)] <- test.kills
+                        globalToneAPIMapDeathData[string(key)] <- test.deaths
+                        globalToneAPIMapDistData[string(key)] <- test.total_distance
+                        globalToneAPIMapMDistData[string(key)] <- test.max_distance
+                    case 3:
+                        globalToneAPIGamemodeData[string(key)] <- test.kills
+                }
+            }
+            print(prefix + "has succeeded in getting stats for " + allHttpRequests[i].slice(1))
         }
-        print(prefix + "Global data has been processed with a total of " + string(weaponEntries) + " entries.")
-    }
-
-    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
-    {
-        print(prefix + "Encountered an error getting global data...")
-    }
-
-    NSHttpRequest(getGlobalStats, onSuccess, onFailure)
-}
-
-void function GetMapStatsFromToneAPI()
-{
-    print(prefix + "Getting map data...")
-    mapEntries = 0
-    HttpRequest getMapStats
-    getMapStats.method = HttpRequestMethod.GET
-    getMapStats.url = HTTPrequestURL + "/maps"
-    getMapStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
-    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
-    {
-        print(prefix + "Map data received, processing...")
-        table JSONForConversion = DecodeJSON(response.body)
-        foreach (var key, var value in JSONForConversion) {
-            table test = expect table(value)
-            globalToneAPIMapKillData[string(key)] <- test.kills
-            globalToneAPIMapDeathData[string(key)] <- test.deaths
-            globalToneAPIMapDistData[string(key)] <- test.total_distance
-            globalToneAPIMapMDistData[string(key)] <- test.max_distance
-            mapEntries += 1
+        void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure) : (i)
+        {
+            print(prefix + "has encountered an error getting stats for " + allHttpRequests[i].slice(1))
         }
-        print(prefix + "Map data has been processed with a total of " + string(mapEntries) + " entries.")
+        NSHttpRequest(getStats, onSuccess, onFailure)
     }
-
-    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
-    {
-        print(prefix + "Encountered an error getting map data...")
-    }
-
-    NSHttpRequest(getMapStats, onSuccess, onFailure)
-}
-
-void function GetGamemodeStatsFromToneAPI()
-{
-    print(prefix + "Getting gamemode data...")
-    gamemodeEntries = 0
-    HttpRequest getGamemodeStats
-    getGamemodeStats.method = HttpRequestMethod.GET
-    getGamemodeStats.url = HTTPrequestURL + "/gamemodes"
-    getGamemodeStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
-    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
-    {
-        print(prefix + "Gamemode data received, processing...")
-        table JSONForConversion = DecodeJSON(response.body)
-        foreach (var key, var value in JSONForConversion) {
-            table test = expect table(value)
-            globalToneAPIGamemodeData[string(key)] <- test.kills
-            gamemodeEntries += 1
-        }
-        print(prefix + "Gamemode data has been processed with a total of " + string(gamemodeEntries) + " entries.")
-    }
-
-    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
-    {
-        print(prefix + "Encountered an error getting gamemode data...")
-    }
-
-    NSHttpRequest(getGamemodeStats, onSuccess, onFailure)
 }
 
 void function fetchGamemodeStatsFromToneAPI(string mapName)

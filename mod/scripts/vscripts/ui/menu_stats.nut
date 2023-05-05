@@ -45,10 +45,7 @@ void function OnViewStats_Open()
 	string mapName = expect string(file.allMaps[ elemNum ])
 	fetchGamemodeStatsFromToneAPI(mapName)
 	}
-	GetWeaponStatsFromToneAPI()
-	GetGlobalDataFromToneAPI()
-	GetMapStatsFromToneAPI()
-	GetGamemodeStatsFromToneAPI()
+	GetStatsFromToneAPI()
 	UI_SetPresentationType( ePresentationType.DEFAULT )
 
 	//UpdateViewStatsKillsMenu()
