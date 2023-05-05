@@ -3,13 +3,7 @@ global function GetWeaponStatsFromToneAPI
 global function GetGlobalDataFromToneAPI
 global function GetMapStatsFromToneAPI
 global function GetGamemodeStatsFromToneAPI
-global function getWeaponKillsFromToneAPI
-global function getNemesisWeaponFromToneAPI
-global function getDWEFromToneAPI
-global function getMapKillFromToneAPI
-global function getMapDeathFromToneAPI
-global function getMapDistFromToneAPI
-global function getMapMDistFromToneAPI
+global function getFromToneAPI
 global function fetchGamemodeStatsFromToneAPI
 
 global table globalToneAPIKillData = {}
@@ -31,6 +25,10 @@ int weaponEntries = 0
 int mapEntries = 0
 int gamemodeEntries = 0
 int mapGamemodeEntries = 0
+
+struct {
+    array<string> allMaps
+} file
 
 void function pulseInit()
 {
@@ -206,62 +204,13 @@ void function fetchGamemodeStatsFromToneAPI(string mapName)
     NSHttpRequest(getMapGamemodeStats, onSuccess, onFailure)
 }
 
-int function getWeaponKillsFromToneAPI(string weaponRef){
+int function getFromToneAPI(string parameter, table data){
 
-    if(weaponRef in globalToneAPIKillData){
-        return expect int(globalToneAPIKillData[weaponRef])
+    if (file.allMaps.find(parameter) != -1) {
+        parameter = parameter.slice(3)
     }
-    return 0
-}
-
-int function getNemesisWeaponFromToneAPI(string weaponRef){
-
-    if(weaponRef in globalToneAPIDeathData){
-        return expect int(globalToneAPIDeathData[weaponRef])
-    }
-    return 0
-}
-
-int function getDWEFromToneAPI(string weaponRef){
-
-    if(weaponRef in globalToneAPIDWEData){
-        return expect int(globalToneAPIDWEData[weaponRef])
-    }
-    return 0
-}
-
-int function getMapKillFromToneAPI(string mapName){
-
-    mapName = mapName.slice(3)
-    if(mapName in globalToneAPIMapKillData){
-        return expect int(globalToneAPIMapKillData[mapName])
-    }
-    return 0
-}
-
-int function getMapDeathFromToneAPI(string mapName){
-
-    mapName = mapName.slice(3)
-    if(mapName in globalToneAPIMapDeathData){
-        return expect int(globalToneAPIMapDeathData[mapName])
-    }
-    return 0
-}
-
-int function getMapMDistFromToneAPI(string mapName){
-
-    mapName = mapName.slice(3)
-    if(mapName in globalToneAPIMapMDistData){
-        return expect int(globalToneAPIMapMDistData[mapName])
-    }
-    return 0
-}
-
-int function getMapDistFromToneAPI(string mapName){
-
-    mapName = mapName.slice(3)
-    if(mapName in globalToneAPIMapDistData){
-        return expect int(globalToneAPIMapDistData[mapName])
+    if (parameter in data) {
+        return expect int(data[parameter])
     }
     return 0
 }

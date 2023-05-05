@@ -155,16 +155,16 @@ void function UpdateStatsForMap( string mapName )
 	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat3" ), Localize( "#STATS_GAMES_PLAYED" ), 				gamesPlayed )
 
 	SetStatsLabelValue( file.menu, "KillsLabel0", 				"KILLS ON MAP" )
-	SetStatsLabelValue( file.menu, "KillsValue0", 				getMapKillFromToneAPI(mapName) )
+	SetStatsLabelValue( file.menu, "KillsValue0", 				getFromToneAPI(mapName, globalToneAPIMapKillData) )
 
 	SetStatsLabelValue( file.menu, "KillsLabel1", 				"DEATHS ON MAP" )
-	SetStatsLabelValue( file.menu, "KillsValue1", 				getMapDeathFromToneAPI(mapName) )
+	SetStatsLabelValue( file.menu, "KillsValue1", 				getFromToneAPI(mapName, globalToneAPIMapDeathData) )
 
 	SetStatsLabelValue( file.menu, "KillsLabel2", 				"TOTAL SHOT DISTANCE" )
-	SetStatsLabelValue( file.menu, "KillsValue2", 				string(int((1.905 * float(getMapDistFromToneAPI(mapName) ) ) )/100) + "m" )
+	SetStatsLabelValue( file.menu, "KillsValue2", 				string(int((1.905 * float(getFromToneAPI(mapName, globalToneAPIMapDistData) ) ) )/100) + "m" )
 
 	SetStatsLabelValue( file.menu, "KillsLabel3", 				"MAXIMUM SHOT DISTANCE" )
-	SetStatsLabelValue( file.menu, "KillsValue3", 				string(int((1.905 * float(getMapMDistFromToneAPI(mapName) ) ) )/100) + "m" )
+	SetStatsLabelValue( file.menu, "KillsValue3", 				string(int((1.905 * float(getFromToneAPI(mapName, globalToneAPIMapMDistData) ) ) )/100) + "m" )
 
 	SetStatsLabelValue( file.menu, "KillsLabel4", 				"--" )
 	SetStatsLabelValue( file.menu, "KillsValue4", 				"--" )

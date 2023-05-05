@@ -49,7 +49,7 @@ float function GetTitanKills( string titanName)
 	float weaponKills = 0
 	foreach ( weaponRef in file.titanStatLoadout[ titanName ])
 	{
-		weaponKills += float(getWeaponKillsFromToneAPI(weaponRef))
+		weaponKills += float(getFromToneAPI(weaponRef, globalToneAPIKillData))
 	}
 	return weaponKills
 }
