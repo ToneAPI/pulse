@@ -14,15 +14,10 @@ global table globalToneAPIGamemodeData = {}
 global table globalToneAPIAllPlayerKillData = {}
 global table globalToneAPIAllPlayerDeathData = {}
 global table< table > globalToneAPIGamemodeMapData = {}
-array <string> allHttpRequests = ["/weapons", "/weapons", "/maps", "/gamemodes"]
-array <int> isGlobal = [0, 1, 0, 0]
 
 string prefix = "default"
 string HTTPrequestURL = "default"
 string currentVersion = "default"
-int weaponEntries = 0
-int mapEntries = 0
-int gamemodeEntries = 0
 int mapGamemodeEntries = 0
 
 struct {
@@ -55,16 +50,15 @@ void function pulseInit()
 
 void function GetStatsFromToneAPI()
 {
+    string UID = NSGetLocalPlayerUID()
+    array <string> allHttpRequests = ["/weapons", "/weapons", "/maps", "/gamemodes"]
+    array <string> allHttpParameters = [UID, "!" + UID, UID, UID]
     for (int i; i < allHttpRequests.len(); i++) {
         HttpRequest getStats
         getStats.method = HttpRequestMethod.GET
         getStats.url = HTTPrequestURL + allHttpRequests[i]
-        if (isGlobal[i] == 1) {
-            getStats.queryParameters["player"] <- ["!" + NSGetLocalPlayerUID()]
-        } else {
-            getStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
-        }
-        void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (i)
+        getStats.queryParameters["player"] <- [allHttpParameters[i]]
+        void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (i, allHttpRequests)
         {
             table DecodedJSON = DecodeJSON(response.body)
             foreach (var key, var value in DecodedJSON) {
@@ -88,7 +82,7 @@ void function GetStatsFromToneAPI()
             }
             print(prefix + "has succeeded in getting stats for " + allHttpRequests[i].slice(1))
         }
-        void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure) : (i)
+        void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure) : (i, allHttpRequests)
         {
             print(prefix + "has encountered an error getting stats for " + allHttpRequests[i].slice(1))
         }
