@@ -3,16 +3,7 @@ global function GetStatsFromToneAPI
 global function getFromToneAPI
 global function fetchGamemodeStatsFromToneAPI
 
-global table globalToneAPIKillData = {}
-global table globalToneAPIDeathData = {}
-global table globalToneAPIDWEData = {}
-global table globalToneAPIMapDeathData = {}
-global table globalToneAPIMapDistData = {}
-global table globalToneAPIMapKillData = {}
-global table globalToneAPIMapMDistData = {}
-global table globalToneAPIGamemodeData = {}
-global table globalToneAPIAllPlayerKillData = {}
-global table globalToneAPIAllPlayerDeathData = {}
+global table pulseData = {}
 global table< table > globalToneAPIGamemodeMapData = {}
 
 string prefix = "default"
@@ -51,35 +42,23 @@ void function pulseInit()
 void function GetStatsFromToneAPI()
 {
     string UID = NSGetLocalPlayerUID()
-    array <string> allHttpRequests = ["/weapons", "/weapons", "/maps", "/gamemodes"]
+    array <string> allHttpRequests = ["/weapons", "/weapons", "/gamemodes", "/maps"]
     array <string> allHttpParameters = [UID, "!" + UID, UID, UID]
+    array <string> keyValues = ["weaponsLocal", "weaponsGlobal", "gamemodes", "maps"]
     for (int i; i < allHttpRequests.len(); i++) {
         HttpRequest getStats
         getStats.method = HttpRequestMethod.GET
         getStats.url = HTTPrequestURL + allHttpRequests[i]
         getStats.queryParameters["player"] <- [allHttpParameters[i]]
-        void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (i, allHttpRequests)
+        void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (i, allHttpRequests, keyValues)
         {
             table DecodedJSON = DecodeJSON(response.body)
+            table keyandvalues = {}
             foreach (var key, var value in DecodedJSON) {
-                table test = expect table(value)
-                switch (i) {
-                    case 0:
-                        globalToneAPIKillData[string(key)] <- test.kills
-                        globalToneAPIDeathData[string(key)] <- test.deaths
-                        globalToneAPIDWEData[string(key)] <- test.deaths_while_equipped
-                    case 1:
-                        globalToneAPIAllPlayerKillData[string(key)] <- test.kills
-                        globalToneAPIAllPlayerDeathData[string(key)] <- test.deaths
-                    case 2:
-                        globalToneAPIMapKillData[string(key)] <- test.kills
-                        globalToneAPIMapDeathData[string(key)] <- test.deaths
-                        globalToneAPIMapDistData[string(key)] <- test.total_distance
-                        globalToneAPIMapMDistData[string(key)] <- test.max_distance
-                    case 3:
-                        globalToneAPIGamemodeData[string(key)] <- test.kills
+                table values = expect table(value)
+                keyandvalues[string(key)] <- values
                 }
-            }
+            pulseData[keyValues[i]] <- keyandvalues
             print(prefix + "has succeeded in getting stats for " + allHttpRequests[i].slice(1))
         }
         void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure) : (i, allHttpRequests)
@@ -122,13 +101,19 @@ void function fetchGamemodeStatsFromToneAPI(string mapName)
     NSHttpRequest(getMapGamemodeStats, onSuccess, onFailure)
 }
 
-int function getFromToneAPI(string parameter, table data){
+int function getFromToneAPI(string parameter, string key, string value){
 
-    if (file.allMaps.find(parameter) != -1) {
+    if (key == "maps") {
         parameter = parameter.slice(3)
     }
-    if (parameter in data) {
-        return expect int(data[parameter])
+    if (key in pulseData) {
+        table keyandvalTable = expect table(pulseData[key])
+        // look to array keyValues for possible values for key
+        if (parameter in keyandvalTable) {
+        table valTable = expect table(keyandvalTable[parameter])
+        return expect int(valTable[value])
+        // possible values for parameter: kills, deaths, deaths_while_equipped, total_distance, max_distance
+        }
     }
     return 0
 }

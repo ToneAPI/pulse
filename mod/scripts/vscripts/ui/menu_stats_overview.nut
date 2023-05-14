@@ -6,11 +6,13 @@ struct
 {
 	var menu
 	array<ItemDisplayData> allTitans
+	array<ItemDisplayData> allPilotWeapons
 	table<string, array<string> > titanStatLoadout
 } file
 
 const MAX_DOTS_ON_GRAPH = 10
 table <string, int> titanKillData = {}
+table <string, int> pilotKillData = {}
 
 const IMAGE_TITAN_STRYDER = $"ui/menu/personal_stats/ps_titan_icon_stryder"
 const IMAGE_TITAN_ATLAS = $"ui/menu/personal_stats/ps_titan_icon_atlas"
@@ -34,7 +36,7 @@ void function GetTitanKills( string titanName )
 {
 	file.allTitans = GetVisibleItemsOfType( eItemTypes.TITAN )
 	var dataTable = GetDataTable( $"datatable/titan_properties.rpak" )
-	
+
 	foreach ( titan in file.allTitans )
 	{
 		file.titanStatLoadout[ titan.ref ] <- []
@@ -50,9 +52,18 @@ void function GetTitanKills( string titanName )
 
 	foreach ( weaponRef in file.titanStatLoadout[ titanName ])
 	{
-		titanKillData[weaponRef] <- getFromToneAPI(weaponRef, globalToneAPIKillData)
+		titanKillData[weaponRef] <- getFromToneAPI(weaponRef, "weaponsLocal", "kills")
 	}
 }
+
+void function GetAllPilotWeapons()
+{
+	file.allPilotWeapons = GetVisibleItemsOfType( eItemTypes.PILOT_PRIMARY)
+	file.allPilotWeapons.extend(GetVisibleItemsOfType( eItemTypes.PILOT_SECONDARY) )
+	file.allPilotWeapons.extend(GetVisibleItemsOfType( eItemTypes.PILOT_ORDNANCE) )
+	file.allPilotWeapons.extend( GetVisibleItemsOfType( eItemTypes.PILOT_SPECIAL ) )
+}
+
 
 void function OnStatsOverview_Open()
 {
@@ -288,40 +299,45 @@ function UpdateViewStatsOverviewMenu()
 	//#########################
 
 	// Lifetime
-
+	table playerweaponData = expect table(pulseData["weaponsLocal"])
+	table globalweaponData = expect table(pulseData["weaponsGlobal"])
 	var totalPilotKills = 0
-	
-	foreach (var key, var value in globalToneAPIKillData) {
-		totalPilotKills += value
+
+	foreach (var key, var value in playerweaponData) {
+		table values = expect table(value)
+		totalPilotKills += values["kills"]
 	}
 
 	var totalGlobalKills = 0
-	foreach (var key, var value in globalToneAPIAllPlayerKillData) {
-		totalGlobalKills += value
-	}
-
-	var totalGlobalDeaths = 0
-	foreach (var key, var value in globalToneAPIAllPlayerDeathData) {
-		totalGlobalDeaths += value
+	foreach (var key, var value in globalweaponData) {
+		table values = expect table(value)
+		totalGlobalKills += values["kills"]
 	}
 
 	var totalPilotDeaths = 0
-
-	foreach (var key, var value in globalToneAPIDeathData) {
-		totalPilotDeaths += value
+	foreach (var key, var value in playerweaponData) {
+		table values = expect table(value)
+		totalPilotDeaths += values["deaths"]
 	}
 
+	var totalGlobalDeaths = 0
+	foreach (var key, var value in globalweaponData) {
+		table values = expect table(value)
+		totalGlobalDeaths += values["deaths"]
+	}
+
+
 	var killsAsPilot = 0
-	foreach (var key, var value in globalToneAPIKillData) {
+	foreach (var key, var value in playerweaponData) {
 		if (key in titanKillData) {
 			continue
 		} else {
-			killsAsPilot += getFromToneAPI(string(key), globalToneAPIKillData)
+			killsAsPilot += getFromToneAPI(string(key), "weaponsLocal", "kills")
 		}
 	}
 
 	var killsAsTitan = 0
-	foreach (var key, var value in globalToneAPIKillData) {
+	foreach (var key, var value in playerweaponData) {
 		if (key in titanKillData) {
 			killsAsTitan += titanKillData[string(key)]
 		}
@@ -391,27 +407,27 @@ function UpdateViewStatsOverviewMenu()
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue0" ), string( killsAsPilot ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue1" ), string( GetPlayerStatInt( player, "kills_stats", "titanKillsAsPilot" ) ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue2" ), string( GetPlayerStatInt( player, "kills_stats", "totalNPC" ) ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue3" ), string( getFromToneAPI("pilot_emptyhanded", globalToneAPIKillData) ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue4" ), string( getFromToneAPI("human_execution", globalToneAPIKillData) ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue3" ), string( getFromToneAPI("pilot_emptyhanded", "weaponsLocal", "kills") ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue4" ), string( getFromToneAPI("human_execution", "weaponsLocal", "kills") ) )
 //	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue5" ), string( GetPlayerStatInt( player, "kills_stats", "titanFallKill" ) ) )
 
 	var titanMeleeKills = 0
-	titanMeleeKills += getFromToneAPI("titan_punch_ion", globalToneAPIKillData)
-	titanMeleeKills += getFromToneAPI("titan_punch_scorch", globalToneAPIKillData)
-	titanMeleeKills += getFromToneAPI("titan_punch_northstar", globalToneAPIKillData)
-	titanMeleeKills += getFromToneAPI("titan_sword", globalToneAPIKillData)
-	titanMeleeKills += getFromToneAPI("titan_punch_tone", globalToneAPIKillData)
-	titanMeleeKills += getFromToneAPI("titan_punch_legion", globalToneAPIKillData)
-	titanMeleeKills += getFromToneAPI("titan_punch_vanguard", globalToneAPIKillData)
-	titanMeleeKills += getFromToneAPI("auto_titan_melee", globalToneAPIKillData)
+	titanMeleeKills += getFromToneAPI("titan_punch_ion", "weaponsLocal", "kills")
+	titanMeleeKills += getFromToneAPI("titan_punch_scorch", "weaponsLocal", "kills")
+	titanMeleeKills += getFromToneAPI("titan_punch_northstar", "weaponsLocal", "kills")
+	titanMeleeKills += getFromToneAPI("titan_sword", "weaponsLocal", "kills")
+	titanMeleeKills += getFromToneAPI("titan_punch_tone", "weaponsLocal", "kills")
+	titanMeleeKills += getFromToneAPI("titan_punch_legion", "weaponsLocal", "kills")
+	titanMeleeKills += getFromToneAPI("titan_punch_vanguard", "weaponsLocal", "kills")
+	titanMeleeKills += getFromToneAPI("auto_titan_melee", "weaponsLocal", "kills")
 
-	var titanExecutions = getFromToneAPI("titan_execution", globalToneAPIKillData)
+	var titanExecutions = getFromToneAPI("titan_execution", "weaponsLocal", "kills")
 
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue0" ), string( killsAsTitan ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue1" ), string( GetPlayerStatInt( player, "kills_stats", "titanKillsAsTitan" ) ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue2" ), string( titanExecutions ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue3" ), string( titanMeleeKills ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue4" ), string( getFromToneAPI("damagedef_titan_step", globalToneAPIKillData) ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsTitanValue4" ), string( getFromToneAPI("damagedef_titan_step", "weaponsLocal", "kills") ) )
 }
 
 function PlotKDPointsOnGraph( menu, graphIndex, values, dottedAverage )
