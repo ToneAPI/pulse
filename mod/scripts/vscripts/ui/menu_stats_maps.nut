@@ -185,6 +185,11 @@ void function UpdateStatsForMap( string mapName )
 		fw = [147, 204, 57, 255],
 		gg = [14, 87, 132, 255]
 	}
+	table< string, string > customGamemodeNames = {
+		sns = "Sticks and Stones"
+		fw = "Frontier War"
+		gg = "Gun Game"
+	}
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
 		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
@@ -204,7 +209,7 @@ void function UpdateStatsForMap( string mapName )
 			float modePlayedTime = 0
 			modePlayedTime = float(globalToneAPIGamemodeMapData[mapName][key])
 			if ( modePlayedTime > 0 ) {
-				AddPieChartEntry( modes, key, modePlayedTime, value)
+				AddPieChartEntry( modes, customGamemodeNames[key], modePlayedTime, value)
 			}
 		}
 	}
