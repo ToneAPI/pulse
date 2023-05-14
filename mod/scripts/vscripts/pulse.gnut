@@ -6,7 +6,8 @@ global function fetchGamemodeStatsFromToneAPI
 global table pulseData = {}
 global table< table > globalToneAPIGamemodeMapData = {}
 
-string prefix = "default"
+global string prefix = "\x1b[38;2;255;178;102m[PULSE]\x1b[0m "
+
 string HTTPrequestURL = "default"
 string currentVersion = "default"
 int mapGamemodeEntries = 0
@@ -17,7 +18,6 @@ struct {
 
 void function pulseInit()
 {
-    prefix = "\x1b[38;2;255;178;102m[PULSE]\x1b[0m "
     HTTPrequestURL = GetConVarString("ToneURL")
     currentVersion = "v" + GetConVarString("MajorVersion") + "." + GetConVarString("MinorVersion") + "." + GetConVarString("PatchVersion")
     HttpRequest getVersion
