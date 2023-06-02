@@ -2,7 +2,7 @@ globalize_all_functions
 
 
 
-string pulsePrefix
+global string pulsePrefix
 void function pulsePrefixSet() //Sets our prefix
 {
     pulsePrefix = format("\x1b[38;2;%i;%i;%im[PULSE]\x1b[0m", 255, 178, 102)
