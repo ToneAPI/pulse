@@ -1,23 +1,23 @@
 globalize_all_functions
 
 
-void function pulsePrintt (string content)
+void function pulsePrintt (string content) //Prints whatever we want printed with given prefix (by standard [PULSE]).
 {
     printt(format("%s " + content, pulsePrefix))
 }
 
-table function pulseGetCurrentVersionAsTable
+table function pulseGetCurrentVersionAsTable //Gets our version numbers from mod.json and puts them in a table for use with pulseFormatAsVersion().
 {
     table result = ["MajorVersion" = GetConVarString("MajorVersion"), "MinorVersion" = GetConVarString("MinorVersion"), "PatchVersion" = GetConVarString("PatchVersion")]
     return result
 }
 
-string function pulseFormatAsVersion(table Version)
+string function pulseFormatAsVersion(table Version) //Formats given version numbers into one neat string (example: v2.0.0).
 {
     return format("v%s.%s.%s", Version["MajorVersion"], Version["MinorVersion"], Version["PatchVersion"])
 }
 
-bool function pulseIsUpToDate(string givenURL)
+bool function pulseIsUpToDate(string givenURL) //Compares version contained in our mod.json with a version.json contained on a remote GitHub repo (see VersionURL within mod.json).
 {
     bool result = false
     HttpRequest versionreq
