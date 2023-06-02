@@ -1,7 +1,7 @@
 {
     "Name": "ToneAPI.pulse",
     "Description": "Displays Tone API kill data in the Stats tab.",
-    "Version": "1.2.2",
+    "Version": "2.0.0",
     "LoadPriority": 1,
     "ConVars": [
         {
@@ -14,15 +14,15 @@
         },
         {
             "Name": "MajorVersion",
-            "DefaultValue": "1"
+            "DefaultValue": "2"
         },
         {
             "Name": "MinorVersion",
-            "DefaultValue": "2"
+            "DefaultValue": "0"
         },
         {
             "Name": "PatchVersion",
-            "DefaultValue": "2"
+            "DefaultValue": "0"
         }
     ],
     "Scripts": [
