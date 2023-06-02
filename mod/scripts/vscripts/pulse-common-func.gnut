@@ -1,6 +1,12 @@
 globalize_all_functions
 
 
+
+string pulsePrefix
+void function pulsePrefixSet {
+    pulsePrefix = format("\x1b[38;2;%i;%i;%im[PULSE]\x1b[0m", 255, 178, 102)
+}
+
 void function pulsePrintt (string content) //Prints whatever we want printed with given prefix (by standard [PULSE]).
 {
     printt(format("%s " + content, pulsePrefix))
