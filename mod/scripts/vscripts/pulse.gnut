@@ -11,3 +11,17 @@ void function pulseInit()
     pulsePrefixSet()
     pulsePrintt("Initialized.")
 }
+
+void function pulseGetData()
+{
+    string URL = GetConVarString("ToneURL")
+    array URLpath = ["/weapons", "/weapons", "/gamemodes", "/gamemodes", "/maps"]
+    pulseRequestData(URL + URLpath[1], ["uid" = NSGetLocalPlayerUID()])
+    pulseRequestData(URL + URLpath[2], ["uid" = "!" + NSGetLocalPlayerUID()])
+    pulseRequestData(URL + URLpath[3], ["uid" = NSGetLocalPlayerUID()])
+    foreach (map in file.allMaps)
+    {
+        pulseRequestData(URL + URLpath[4], ["uid" = NSGetLocalPlayerUID(), "map" = map.slice(3)])
+    }
+    pulseRequestData(URL + URLpath[5], ["uid" = NSGetLocalPlayerUID()])
+}
