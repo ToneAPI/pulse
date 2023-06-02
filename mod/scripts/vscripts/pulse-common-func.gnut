@@ -45,7 +45,7 @@ bool function pulseIsUpToDate(string givenURL) //Compares version contained in o
     return result
 }
 
-bool function pulseRequestData(string givenURL, table parameterTable) //Gets all data from API (see ToneURL within mod.json) and puts it into one table for processing.
+bool function pulseRequestData(string givenURL, table parameterTable) //Gets data from API (see ToneURL within mod.json) and puts it into one table for processing.
 {
     table<string, array<string> > params
     foreach (parameter in paramTable)
@@ -62,4 +62,19 @@ bool function pulseRequestData(string givenURL, table parameterTable) //Gets all
         pulsePrintt("Something went wrong while getting data.")
     }
     return NSHttpGet(givenURL, params, onSuccess, onFailure)
+}
+
+int function pulseParse(string parameter, string key, string value)
+{
+    if (key == "maps") {
+        parameter = parameter.slice(3)
+    }
+    if (key in pulseData) {
+        table keyandvalTable = expect table(pulseData[key])
+        if (parameter in keyandvalTable) {
+        table valTable = expect table(keyandvalTable[parameter])
+        return expect int(valTable[value])
+        }
+    }
+    return 0
 }
