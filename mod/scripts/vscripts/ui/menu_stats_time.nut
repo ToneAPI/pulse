@@ -160,10 +160,10 @@ void function UpdateViewStatsTimeMenu()
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
 		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
-		if ( pulseParse(modeName, "gamemodes", "kills") != 0 )
+		if ( pulseParse(modeName, "gamemodesAll", "kills") != 0 )
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(pulseParse(modeName, "gamemodes", "kills"))
+			modePlayedTime = float(pulseParse(modeName, "gamemodesAll", "kills"))
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
 			}
@@ -171,10 +171,10 @@ void function UpdateViewStatsTimeMenu()
 	}
 	foreach (string key, array<int> value in customGamemodeList)
 	{
-		if ( pulseParse(key, "gamemodes", "kills") != 0 )
+		if ( pulseParse(key, "gamemodesAll", "kills") != 0 )
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(pulseParse(key, "gamemodes", "kills"))
+			modePlayedTime = float(pulseParse(key, "gamemodesAll", "kills"))
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, customGamemodeNames[key], modePlayedTime, value)
 			}
