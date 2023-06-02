@@ -1,16 +1,6 @@
 global function pulseInit
-global function GetStatsFromToneAPI
-global function getFromToneAPI
-global function fetchGamemodeStatsFromToneAPI
 
 global table pulseData = {}
-global table< table > globalToneAPIGamemodeMapData = {}
-
-global string prefix = "\x1b[38;2;255;178;102m[PULSE]\x1b[0m "
-
-string HTTPrequestURL = "default"
-string currentVersion = "default"
-int mapGamemodeEntries = 0
 
 struct {
     array<string> allMaps
@@ -18,102 +8,6 @@ struct {
 
 void function pulseInit()
 {
-    HTTPrequestURL = GetConVarString("ToneURL")
-    currentVersion = "v" + GetConVarString("MajorVersion") + "." + GetConVarString("MinorVersion") + "." + GetConVarString("PatchVersion")
-    HttpRequest getVersion
-    getVersion.method = HttpRequestMethod.GET
-    getVersion.url = GetConVarString("VersionURL")
-    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
-    {
-        table JSONDecoded = DecodeJSON(response.body)
-        if (JSONDecoded["Major"] == GetConVarString("MajorVersion") && JSONDecoded["Minor"] == GetConVarString("MinorVersion") && JSONDecoded["Patch"] == GetConVarString("PatchVersion")) {
-            print(prefix + currentVersion + " has been loaded and is up to date.")
-        } else {
-            print(prefix + currentVersion + " has been loaded. Recommend updating to latest version: v" + JSONDecoded["Major"] + "." + JSONDecoded["Minor"] + "." + JSONDecoded["Patch"] + ".")
-        }
-    }
-    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
-    {
-        print(prefix + currentVersion + " has been loaded and has encountered an error getting latest version data.")
-    }
-    NSHttpRequest(getVersion, onSuccess, onFailure)
-}
-
-void function GetStatsFromToneAPI()
-{
-    string UID = NSGetLocalPlayerUID()
-    array <string> allHttpRequests = ["/weapons", "/weapons", "/gamemodes", "/maps"]
-    array <string> allHttpParameters = [UID, "!" + UID, UID, UID]
-    array <string> keyValues = ["weaponsLocal", "weaponsGlobal", "gamemodes", "maps"]
-    for (int i; i < allHttpRequests.len(); i++) {
-        HttpRequest getStats
-        getStats.method = HttpRequestMethod.GET
-        getStats.url = HTTPrequestURL + allHttpRequests[i]
-        getStats.queryParameters["player"] <- [allHttpParameters[i]]
-        void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (i, allHttpRequests, keyValues)
-        {
-            table DecodedJSON = DecodeJSON(response.body)
-            table keyandvalues = {}
-            foreach (var key, var value in DecodedJSON) {
-                table values = expect table(value)
-                keyandvalues[string(key)] <- values
-                }
-            pulseData[keyValues[i]] <- keyandvalues
-            print(prefix + "has succeeded in getting stats for " + allHttpRequests[i].slice(1))
-        }
-        void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure) : (i, allHttpRequests)
-        {
-            print(prefix + "has encountered an error getting stats for " + allHttpRequests[i].slice(1))
-        }
-        NSHttpRequest(getStats, onSuccess, onFailure)
-    }
-}
-
-void function fetchGamemodeStatsFromToneAPI(string mapName)
-{
-    mapGamemodeEntries = 0
-    string mapNameSliced = mapName.slice(3)
-    HttpRequest getMapGamemodeStats
-    getMapGamemodeStats.method = HttpRequestMethod.GET
-    getMapGamemodeStats.url = HTTPrequestURL + "/gamemodes"
-    getMapGamemodeStats.queryParameters["map"] <- [mapNameSliced]
-    getMapGamemodeStats.queryParameters["player"] <- [NSGetLocalPlayerUID()]
-    void functionref(HttpRequestResponse) onSuccess = void function(HttpRequestResponse response):(mapName)
-    {
-        table JSONForConversion = DecodeJSON(response.body)
-        table mapData = {}
-        foreach (var gamemode, var value in JSONForConversion) {
-            table test = expect table(value)
-            mapData[string(gamemode)] <- test.kills
-            mapGamemodeEntries += 1
-        }
-
-        globalToneAPIGamemodeMapData[mapName] <- mapData
-
-        print(prefix + "Map gamemode data has been processed with a total of " + string(mapGamemodeEntries) + " entries.")
-    }
-
-    void functionref(HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
-    {
-        print(prefix + "Encountered an error getting map gamemode data...")
-    }
-
-    NSHttpRequest(getMapGamemodeStats, onSuccess, onFailure)
-}
-
-int function getFromToneAPI(string parameter, string key, string value){
-
-    if (key == "maps") {
-        parameter = parameter.slice(3)
-    }
-    if (key in pulseData) {
-        table keyandvalTable = expect table(pulseData[key])
-        // look to array keyValues for possible values for key
-        if (parameter in keyandvalTable) {
-        table valTable = expect table(keyandvalTable[parameter])
-        return expect int(valTable[value])
-        // possible values for parameter: kills, deaths, deaths_while_equipped, total_distance, max_distance
-        }
-    }
-    return 0
+    pulsePrefixSet()
+    pulsePrintt("Initialized.")
 }
