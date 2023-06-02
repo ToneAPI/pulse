@@ -24,6 +24,27 @@ string function pulseFormatAsVersion(table Version) //Formats given version numb
     return format("v%s.%s.%s", Version["MajorVersion"], Version["MinorVersion"], Version["PatchVersion"])
 }
 
+string function pulseGetCurrentVersionAsString()
+{
+    return pulseFormatAsVersion(pulseGetCurrentVersionAsTable())
+}
+
+string function pulseGetLatestVersionAsString()
+{
+    string result = ""
+    void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        table DecodedJSON = DecodeJSON(response.body)
+        result = pulseFormatAsVersion(DecodedJSON)
+    }
+    void functionref (HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        pulsePrintt("Something went wrong while getting latest version.")
+    }
+    NSHttpGet(givenURL, onSuccess, onFailure)
+    return result
+}
+
 bool function pulseIsUpToDate(string givenURL) //Compares version contained in our mod.json with a version.json contained on a remote GitHub repo (see VersionURL within mod.json).
 {
     bool result = false
