@@ -27,9 +27,6 @@ string function pulseFormatAsVersion(table Version) //Formats given version numb
 bool function pulseIsUpToDate(string givenURL) //Compares version contained in our mod.json with a version.json contained on a remote GitHub repo (see VersionURL within mod.json).
 {
     bool result = false
-    HttpRequest versionreq
-    versionreq.method = HttpRequestMethod.GET
-    versionreq.url = givenURL
     void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
     {
         table DecodedJSON = DecodeJSON(response.body)
@@ -44,7 +41,7 @@ bool function pulseIsUpToDate(string givenURL) //Compares version contained in o
     {
         pulsePrintt("Something went wrong while getting latest version.")
     }
-    NSHttpRequest(versionreq, onSuccess, onFailure)
+    NSHttpGet(givenURL, onSuccess, onFailure)
     return result
 }
 
