@@ -27,11 +27,15 @@
     ],
     "Scripts": [
         {
-        "Path": "pulse.gnut",
-        "RunOn": "UI",
-        "UICallback": {
-            "After": "pulseInit"
-        }
+            "Path":"pulse-common-func.gnut",
+            "RunOn":"UI"
+        },
+        {
+            "Path": "pulse.gnut",
+            "RunOn": "UI",
+            "UICallback": {
+                "After": "pulseInit"
+            }
         }
     ]
 }
