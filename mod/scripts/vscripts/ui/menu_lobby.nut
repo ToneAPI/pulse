@@ -124,6 +124,7 @@ void function MenuLobby_Init()
 	PrecacheHUDMaterial( $"ui/menu/main_menu/motd_background_happyhour" )
 
 	AddUICallback_OnLevelInit( OnLobbyLevelInit )
+	pulseGetData()
 }
 
 
@@ -234,15 +235,45 @@ void function SetupComboButtonTest( var menu )
 	int headerIndex = 0
 	int buttonIndex = 0
 	file.playHeader = AddComboButtonHeader( comboStruct, headerIndex, "#MENU_HEADER_PLAY" )
-	file.findGameButton = AddComboButton( comboStruct, headerIndex, buttonIndex++, "#MENU_TITLE_FIND_GAME" )
-	file.lobbyButtons.append( file.findGameButton )
-	Hud_AddEventHandler( file.findGameButton, UIE_CLICK, BigPlayButton1_Activate )
 
-	file.inviteRoomButton = AddComboButton( comboStruct, headerIndex, buttonIndex++, "#MENU_TITLE_INVITE_ROOM" )
-	Hud_AddEventHandler( file.inviteRoomButton, UIE_CLICK, DoRoomInviteIfAllowed )
+	bool isModded = IsNorthstarServer()
+
+
+	// this will be the server browser
+	if ( isModded )
+	{
+		file.findGameButton = AddComboButton( comboStruct, headerIndex, buttonIndex++, "#MENU_TITLE_SERVER_BROWSER" )
+		file.lobbyButtons.append( file.findGameButton )
+		Hud_SetLocked( file.findGameButton, true )
+		Hud_AddEventHandler( file.findGameButton, UIE_CLICK, OpenServerBrowser )
+	}
+	else
+	{
+		file.findGameButton = AddComboButton( comboStruct, headerIndex, buttonIndex++, "#MENU_TITLE_FIND_GAME" )
+		file.lobbyButtons.append( file.findGameButton )
+		Hud_AddEventHandler( file.findGameButton, UIE_CLICK, BigPlayButton1_Activate )
+	}
+
+	// this is used for launching private matches now
+	if ( isModded )
+	{
+		file.inviteRoomButton = AddComboButton( comboStruct, headerIndex, buttonIndex++, "#PRIVATE_MATCH" )
+		Hud_AddEventHandler( file.inviteRoomButton, UIE_CLICK, StartPrivateMatch )
+	}
+	else
+	{
+		file.inviteRoomButton = AddComboButton( comboStruct, headerIndex, buttonIndex++, "#MENU_TITLE_INVITE_ROOM" )
+		Hud_AddEventHandler( file.inviteRoomButton, UIE_CLICK, DoRoomInviteIfAllowed )
+	}
 
 	file.inviteFriendsButton = AddComboButton( comboStruct, headerIndex, buttonIndex++, "#MENU_TITLE_INVITE_FRIENDS" )
 	Hud_AddEventHandler( file.inviteFriendsButton, UIE_CLICK, InviteFriendsIfAllowed )
+
+	if ( isModded )
+	{
+		Hud_SetEnabled( file.inviteFriendsButton, false )
+		Hud_SetVisible( file.inviteFriendsButton, false )
+	}
 
 	// file.toggleMenuModeButton = AddComboButton( comboStruct, headerIndex, buttonIndex++, "#MENU_LOBBY_SWITCH_FD" )
 	// Hud_AddEventHandler( file.toggleMenuModeButton, UIE_CLICK, ToggleLobbyMode )
@@ -334,6 +365,16 @@ void function SetupComboButtonTest( var menu )
 bool function MatchResultsExist()
 {
 	return true // TODO
+}
+
+void function StartPrivateMatch( var button )
+{
+	if ( Hud_IsLocked( button ) )
+		return
+
+	ClientCommand( "StartPrivateMatchSearch" )
+	NSSetLoading(true)
+	NSUpdateListenServer()
 }
 
 void function DoRoomInviteIfAllowed( var button )
@@ -1146,6 +1187,16 @@ void function SetUIPlayerCreditsInfo( var infoElement, int credits, int xp, int 
 	RuiSetImage( rui, "callsignIcon", callsignIcon.image )
 }
 
+void function OpenServerBrowser( var button )
+{
+	if ( Hud_IsLocked( button ) )
+		return
+
+	// nothing here yet lol
+	// look at OpenSelectedPlaylistMenu for advancing to server browser menu probably
+	AdvanceMenu( GetMenu( "ServerBrowserMenu" ) )
+}
+
 void function BigPlayButton1_Activate( var button )
 {
 	if ( Hud_IsLocked( button ) )
@@ -1189,7 +1240,7 @@ function UpdateLobbyUI()
 	thread UpdateLobbyType()
 	thread UpdateMatchmakingStatus()
 	thread UpdateChatroomThread()
-	thread UpdateInviteJoinButton()
+	//thread UpdateInviteJoinButton()
 	thread UpdateInviteFriendsToNetworkButton()
 	thread UpdatePlayerInfo()
 
@@ -1577,9 +1628,4 @@ void function Lobby_SetFDModeBasedOnSearching( string playlistToSearch )
 	}
 
 	Lobby_SetFDMode( isFDMode )
-}
-
-void function pulseRefresh
-{
-	pulseGetData()
 }

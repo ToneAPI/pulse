@@ -15,17 +15,15 @@ void function pulsePrintt(string content) //Prints whatever we want printed with
 
 bool function pulseRequestData(string givenURL, table parameterTable, string tablepath) //Gets data from API (see ToneURL within mod.json) and puts it into one table for processing.
 {
-    table<string, array<string> > params
-    foreach (parameter in paramTable)
-    {
-        params[parameter] <- [paramTable(parameter)]
-    }
-    void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (params, tablepath)
+    table<string, array<string> > requestTable
+    void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (parameterTable, requestTable, tablepath)
     {
         table DecodedJSON = DecodeJSON(response.body)
-        if (params["map"])
+        if ("map" in parameterTable)
         {
-            table map[params["map"]] <- DecodedJSON
+            table map
+            map[expect string(parameterTable["map"])] <- DecodedJSON
+            pulsePrintt(tablepath)
             pulseData[tablepath] <- map
         } else {
             pulseData[tablepath] <- DecodedJSON
@@ -35,7 +33,11 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
     {
         pulsePrintt("Something went wrong while getting data.")
     }
-    return NSHttpGet(givenURL, params, onSuccess, onFailure)
+    foreach (key, value in parameterTable)
+    {
+        requestTable[string(key)] <- [expect string(parameterTable[string(key)])]
+    }
+    return NSHttpGet(givenURL, requestTable, onSuccess, onFailure)
 }
 
 int function pulseParse(string parameter, string key, string value, string opt = "none")
@@ -54,7 +56,7 @@ int function pulseParse(string parameter, string key, string value, string opt =
             {
                 return expect int(valTable[value])
             } else {
-                actualValTable = expect table(valTable[value])
+                table actualValTable = expect table(valTable[value])
                 return expect int(actualValTable[opt])
             }
         }

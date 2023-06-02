@@ -1,4 +1,5 @@
 global function pulseInit
+global function pulseGetData
 
 global table pulseData = {}
 
@@ -15,14 +16,14 @@ void function pulseInit()
 void function pulseGetData()
 {
     string URL = GetConVarString("ToneURL")
-    array URLpath = ["/weapons", "/weapons", "/gamemodes", "/gamemodes", "/maps"]
-    array tablepath = ["weaponsLocal", "weaponsGlobal", "gamemodesAll", "gamemodesSeparated", "maps"]
-    pulseRequestData(URL + URLpath[1], ["uid" = NSGetLocalPlayerUID()], tablepath[1])
-    pulseRequestData(URL + URLpath[2], ["uid" = "!" + NSGetLocalPlayerUID()], tablepath[2])
-    pulseRequestData(URL + URLpath[3], ["uid" = NSGetLocalPlayerUID()], tablepath[3])
+    array <string> URLpath = ["/weapons", "/weapons", "/gamemodes", "/gamemodes", "/maps"]
+    array <string> tablepath = ["weaponsLocal", "weaponsGlobal", "gamemodesAll", "gamemodesSeparated", "maps"]
+    pulseRequestData(URL + URLpath[0], {["player"] = NSGetLocalPlayerUID()}, tablepath[0])
+    pulseRequestData(URL + URLpath[1], {["player"] = "!" + NSGetLocalPlayerUID()}, tablepath[1])
+    pulseRequestData(URL + URLpath[2], {["player"] = NSGetLocalPlayerUID()}, tablepath[2])
     foreach (map in file.allMaps)
     {
-        pulseRequestData(URL + URLpath[4], ["uid" = NSGetLocalPlayerUID(), "map" = map.slice(3)], tablepath[4])
+        pulseRequestData(URL + URLpath[3], {["player"] = NSGetLocalPlayerUID(), ["map"] = map.slice(3)}, tablepath[3])
     }
-    pulseRequestData(URL + URLpath[5], ["uid" = NSGetLocalPlayerUID()], tablepath[5])
+    pulseRequestData(URL + URLpath[4], {["player"] = NSGetLocalPlayerUID()}, tablepath[4])
 }

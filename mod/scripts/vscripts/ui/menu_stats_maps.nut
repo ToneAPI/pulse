@@ -205,7 +205,7 @@ void function UpdateStatsForMap( string mapName )
 		if ( mapName in pulseData && key in pulseData[mapName])
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(pulseParse(mapName, "gamemodesSeparated", modeName, "kills"))
+			modePlayedTime = float(pulseParse(mapName, "gamemodesSeparated", key, "kills"))
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, customGamemodeNames[key], modePlayedTime, value)
 			}
