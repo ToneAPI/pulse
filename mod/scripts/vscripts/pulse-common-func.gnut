@@ -3,16 +3,17 @@ globalize_all_functions
 
 
 string pulsePrefix
-void function pulsePrefixSet {
+void function pulsePrefixSet() //Sets our prefix
+{
     pulsePrefix = format("\x1b[38;2;%i;%i;%im[PULSE]\x1b[0m", 255, 178, 102)
 }
 
-void function pulsePrintt (string content) //Prints whatever we want printed with given prefix (by standard [PULSE]).
+void function pulsePrintt(string content) //Prints whatever we want printed with given prefix (by standard [PULSE]).
 {
     printt(format("%s " + content, pulsePrefix))
 }
 
-table function pulseGetCurrentVersionAsTable //Gets our version numbers from mod.json and puts them in a table for use with pulseFormatAsVersion().
+table function pulseGetCurrentVersionAsTable() //Gets our version numbers from mod.json and puts them in a table for use with pulseFormatAsVersion().
 {
     table result = ["MajorVersion" = GetConVarString("MajorVersion"), "MinorVersion" = GetConVarString("MinorVersion"), "PatchVersion" = GetConVarString("PatchVersion")]
     return result
@@ -45,4 +46,23 @@ bool function pulseIsUpToDate(string givenURL) //Compares version contained in o
     }
     NSHttpRequest(versionreq, onSuccess, onFailure)
     return result
+}
+
+bool function pulseRequestData(string givenURL, table parameterTable) //Gets all data from API (see ToneURL within mod.json) and puts it into one table for processing.
+{
+    table<string, array<string> > params
+    foreach (parameter in paramTable)
+    {
+        params[parameter] <- [paramTable(parameter)]
+    }
+    void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response)
+    {
+        table DecodedJSON = DecodeJSON(response.body)
+        pulseData += DecodedJSON
+    }
+    void functionref (HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    {
+        pulsePrintt("Something went wrong while getting data.")
+    }
+    return NSHttpGet(givenURL, params, onSuccess, onFailure)
 }
