@@ -124,7 +124,6 @@ void function MenuLobby_Init()
 	PrecacheHUDMaterial( $"ui/menu/main_menu/motd_background_happyhour" )
 
 	AddUICallback_OnLevelInit( OnLobbyLevelInit )
-	pulseGetData()
 }
 
 
@@ -549,6 +548,7 @@ void function OnLobbyMenu_Open()
 
 	// code will start loading DLC info from first party unless already done
 	InitDLCStore()
+	pulseGetData()
 
 	thread UpdateCachedNewItems()
 	if ( file.putPlayerInMatchmakingAfterDelay )
