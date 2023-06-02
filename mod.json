@@ -11,18 +11,6 @@
         {
             "Name": "VersionURL",
             "DefaultValue": "https://raw.githubusercontent.com/ToneAPI/pulse/main/version.json"
-        },
-        {
-            "Name": "MajorVersion",
-            "DefaultValue": "2"
-        },
-        {
-            "Name": "MinorVersion",
-            "DefaultValue": "0"
-        },
-        {
-            "Name": "PatchVersion",
-            "DefaultValue": "0"
         }
     ],
     "Scripts": [
