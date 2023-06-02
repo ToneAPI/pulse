@@ -16,12 +16,13 @@ void function pulseGetData()
 {
     string URL = GetConVarString("ToneURL")
     array URLpath = ["/weapons", "/weapons", "/gamemodes", "/gamemodes", "/maps"]
-    pulseRequestData(URL + URLpath[1], ["uid" = NSGetLocalPlayerUID()])
-    pulseRequestData(URL + URLpath[2], ["uid" = "!" + NSGetLocalPlayerUID()])
-    pulseRequestData(URL + URLpath[3], ["uid" = NSGetLocalPlayerUID()])
+    array tablepath = ["weaponsLocal", "weaponsGlobal", "gamemodesAll", "gamemodesSeparated", "maps"]
+    pulseRequestData(URL + URLpath[1], ["uid" = NSGetLocalPlayerUID()], tablepath[1])
+    pulseRequestData(URL + URLpath[2], ["uid" = "!" + NSGetLocalPlayerUID()], tablepath[2])
+    pulseRequestData(URL + URLpath[3], ["uid" = NSGetLocalPlayerUID()], tablepath[3])
     foreach (map in file.allMaps)
     {
-        pulseRequestData(URL + URLpath[4], ["uid" = NSGetLocalPlayerUID(), "map" = map.slice(3)])
+        pulseRequestData(URL + URLpath[4], ["uid" = NSGetLocalPlayerUID(), "map" = map.slice(3)], tablepath[4])
     }
-    pulseRequestData(URL + URLpath[5], ["uid" = NSGetLocalPlayerUID()])
+    pulseRequestData(URL + URLpath[5], ["uid" = NSGetLocalPlayerUID()], tablepath[5])
 }

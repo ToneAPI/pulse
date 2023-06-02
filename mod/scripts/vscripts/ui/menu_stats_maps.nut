@@ -140,8 +140,6 @@ void function UpdateStatsForMap( string mapName )
 
 	Hud_SetText( Hud_GetChild( file.menu, "WeaponName" ), GetMapDisplayName( mapName ) )
 
-	fetchGamemodeStatsFromToneAPI(mapName)
-
 	// Image
 	var imageElem = Hud_GetRui( Hud_GetChild( file.menu, "WeaponImageLarge" ) )
 	RuiSetImage( imageElem, "basicImage", GetMapImageForMapName( mapName ) )
@@ -155,16 +153,16 @@ void function UpdateStatsForMap( string mapName )
 	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat3" ), Localize( "#STATS_GAMES_PLAYED" ), 				gamesPlayed )
 
 	SetStatsLabelValue( file.menu, "KillsLabel0", 				"KILLS ON MAP" )
-	SetStatsLabelValue( file.menu, "KillsValue0", 				getFromToneAPI(mapName, "maps", "kills") )
+	SetStatsLabelValue( file.menu, "KillsValue0", 				pulseParse(mapName, "maps", "kills") )
 
 	SetStatsLabelValue( file.menu, "KillsLabel1", 				"DEATHS ON MAP" )
-	SetStatsLabelValue( file.menu, "KillsValue1", 				getFromToneAPI(mapName, "maps", "deaths") )
+	SetStatsLabelValue( file.menu, "KillsValue1", 				pulseParse(mapName, "maps", "deaths") )
 
 	SetStatsLabelValue( file.menu, "KillsLabel2", 				"TOTAL SHOT DISTANCE" )
-	SetStatsLabelValue( file.menu, "KillsValue2", 				string(int((1.905 * float(getFromToneAPI(mapName, "maps", "total_distance") ) ) )/100) + "m" )
+	SetStatsLabelValue( file.menu, "KillsValue2", 				string(int((1.905 * float(pulseParse(mapName, "maps", "total_distance") ) ) )/100) + "m" )
 
 	SetStatsLabelValue( file.menu, "KillsLabel3", 				"MAXIMUM SHOT DISTANCE" )
-	SetStatsLabelValue( file.menu, "KillsValue3", 				string(int((1.905 * float(getFromToneAPI(mapName, "maps", "max_distance") ) ) )/100) + "m" )
+	SetStatsLabelValue( file.menu, "KillsValue3", 				string(int((1.905 * float(pulseParse(mapName, "maps", "max_distance") ) ) )/100) + "m" )
 
 	SetStatsLabelValue( file.menu, "KillsLabel4", 				"--" )
 	SetStatsLabelValue( file.menu, "KillsValue4", 				"--" )
@@ -193,10 +191,10 @@ void function UpdateStatsForMap( string mapName )
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
 		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
-		if ( mapName in globalToneAPIGamemodeMapData && modeName in globalToneAPIGamemodeMapData[mapName] )
+		if ( mapName in pulseData && modeName in pulseData[mapName] )
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(globalToneAPIGamemodeMapData[mapName][modeName])
+			modePlayedTime = float(pulseParse(mapName, "gamemodesSeparated", modeName, "kills"))
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
 			}
@@ -204,10 +202,10 @@ void function UpdateStatsForMap( string mapName )
 	}
 	foreach (string key, array<int> value in customGamemodeList)
 	{
-		if ( mapName in globalToneAPIGamemodeMapData && key in globalToneAPIGamemodeMapData[mapName])
+		if ( mapName in pulseData && key in pulseData[mapName])
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(globalToneAPIGamemodeMapData[mapName][key])
+			modePlayedTime = float(pulseParse(mapName, "gamemodesSeparated", modeName, "kills"))
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, customGamemodeNames[key], modePlayedTime, value)
 			}
