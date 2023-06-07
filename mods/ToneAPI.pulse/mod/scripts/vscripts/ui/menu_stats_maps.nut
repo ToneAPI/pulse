@@ -191,7 +191,7 @@ void function UpdateStatsForMap( string mapName )
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
 		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
-		if ( mapName in pulseData && modeName in pulseData[mapName] )
+		if (mapName in pulseData["gamemodesSeparated"])
 		{
 			float modePlayedTime = 0
 			modePlayedTime = float(pulseParse(mapName, "gamemodesSeparated", modeName, "kills"))
@@ -202,7 +202,7 @@ void function UpdateStatsForMap( string mapName )
 	}
 	foreach (string key, array<int> value in customGamemodeList)
 	{
-		if ( mapName in pulseData && key in pulseData[mapName])
+		if (mapName in pulseData["gamemodesSeparated"])
 		{
 			float modePlayedTime = 0
 			modePlayedTime = float(pulseParse(mapName, "gamemodesSeparated", key, "kills"))

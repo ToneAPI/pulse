@@ -21,10 +21,8 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
         table DecodedJSON = DecodeJSON(response.body)
         if ("map" in parameterTable)
         {
-            table map
-            map[expect string(parameterTable["map"])] <- DecodedJSON
-            pulsePrintt(tablepath)
-            pulseData[tablepath] <- map
+            string mapName = expect string(parameterTable["map"])
+            pulseData[tablepath] <- {mapName = DecodedJSON}
         } else {
             pulseData[tablepath] <- DecodedJSON
         }
