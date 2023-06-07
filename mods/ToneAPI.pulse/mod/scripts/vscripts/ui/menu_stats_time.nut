@@ -49,7 +49,7 @@ float function GetTitanKills( string titanName)
 	float weaponKills = 0
 	foreach ( weaponRef in file.titanStatLoadout[ titanName ])
 	{
-		weaponKills += float(pulseParse(weaponRef, "weaponsLocal", "kills"))
+		weaponKills += float(pulseParse("weaponsLocal", weaponRef, "kills"))
 	}
 	return weaponKills
 }
@@ -160,10 +160,10 @@ void function UpdateViewStatsTimeMenu()
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
 		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
-		if ( pulseParse(modeName, "gamemodesAll", "kills") != 0 )
+		if ( pulseParse("gamemodesAll", modeName, "kills") != 0 )
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(pulseParse(modeName, "gamemodesAll", "kills"))
+			modePlayedTime = float(pulseParse("gamemodesAll", modeName, "kills"))
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
 			}
@@ -171,10 +171,10 @@ void function UpdateViewStatsTimeMenu()
 	}
 	foreach (string key, array<int> value in customGamemodeList)
 	{
-		if ( pulseParse(key, "gamemodesAll", "kills") != 0 )
+		if ( pulseParse("gamemodesAll", key, "kills") != 0 )
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(pulseParse(key, "gamemodesAll", "kills"))
+			modePlayedTime = float(pulseParse("gamemodesAll", key, "kills"))
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, customGamemodeNames[key], modePlayedTime, value)
 			}

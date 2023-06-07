@@ -22,7 +22,7 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
         if ("map" in parameterTable)
         {
             string mapName = expect string(parameterTable["map"])
-            pulseData[tablepath] <- {mapName = DecodedJSON}
+            pulseData["mp_" + mapName] <- DecodedJSON
         } else {
             pulseData[tablepath] <- DecodedJSON
         }
@@ -38,26 +38,19 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
     return NSHttpGet(givenURL, requestTable, onSuccess, onFailure)
 }
 
-int function pulseParse(string parameter, string key, string value, string opt = "none")
+int function pulseParse(...) //Returns data from our pulseData table.
 {
-    if (key == "maps")
-    {
-        parameter = parameter.slice(3)
-    }
-    if (key in pulseData)
-    {
-        table keyandvalTable = expect table(pulseData[key])
-        if (parameter in keyandvalTable)
-        {
-            table valTable = expect table(keyandvalTable[parameter])
-            if (opt == "none")
-            {
-                return expect int(valTable[value])
-            } else {
-                table actualValTable = expect table(valTable[value])
-                return expect int(actualValTable[opt])
-            }
+    table parser = pulseData
+    int result = 0
+    for (int i; i < vargc; i++) {
+        print (vargc)
+        if (i < expect int(vargc) - 1) {
+            if (expect string (vargv[i]) in parser) {
+                parser = expect table(parser[expect string(vargv[i])])
+            } else {break}
+        } else {
+            result = expect int(parser[expect string(vargv[i])])
         }
     }
-    return 0
+    return result
 }
