@@ -10,6 +10,7 @@ struct {
 void function pulseInit()
 {
     pulsePrefixSet()
+    file.allMaps = GetPrivateMatchMaps()
     pulsePrintt("Initialized.")
 }
 
@@ -21,7 +22,7 @@ void function pulseGetData()
     pulseRequestData(URL + URLpath[0], {["player"] = NSGetLocalPlayerUID()}, tablepath[0])
     pulseRequestData(URL + URLpath[1], {["player"] = "!" + NSGetLocalPlayerUID()}, tablepath[1])
     pulseRequestData(URL + URLpath[2], {["player"] = NSGetLocalPlayerUID()}, tablepath[2])
-    foreach (string map in file.allMaps)
+    foreach (map in file.allMaps)
     {
         pulseRequestData(URL + URLpath[3], {["player"] = NSGetLocalPlayerUID(), ["map"] = map.slice(3)}, tablepath[3])
     }

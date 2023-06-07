@@ -16,13 +16,16 @@ void function pulsePrintt(string content) //Prints whatever we want printed with
 bool function pulseRequestData(string givenURL, table parameterTable, string tablepath) //Gets data from API (see ToneURL within mod.json) and puts it into one table for processing.
 {
     table<string, array<string> > requestTable
+    pulsePrintt(tablepath)
     void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (parameterTable, requestTable, tablepath)
     {
         table DecodedJSON = DecodeJSON(response.body)
         if ("map" in parameterTable)
         {
             string mapName = expect string(parameterTable["map"])
-            pulseData["mp_" + mapName] <- DecodedJSON
+            table withMapName = {}
+            withMapName[mapName] <- DecodedJSON
+            pulseData[tablepath] <- withMapName
         } else {
             pulseData[tablepath] <- DecodedJSON
         }
@@ -43,7 +46,6 @@ int function pulseParse(...) //Returns data from our pulseData table.
     table parser = pulseData
     int result = 0
     for (int i; i < vargc; i++) {
-        print (vargc)
         if (i < expect int(vargc) - 1) {
             if (expect string (vargv[i]) in parser) {
                 parser = expect table(parser[expect string(vargv[i])])
