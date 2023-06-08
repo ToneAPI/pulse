@@ -78,3 +78,16 @@ Found a bug? Make an issue on GitHub [here.](https://github.com/ToneAPI/pulse/is
 The Tone API is NOT used by every server, view a list of supported servers [here.](https://tone.sleepycat.date/v2/client/servers)
 
 Pulse is very much a W.I.P as of right now, features may be missing/nonfunctional.
+
+## CHANGELOG
+
+<details>
+  <summary> pulse v2.0.0 "Demeter" </summary>
+  
+  - Switched to Thunderstore template on the GitHub site for easier development.
+  - General code rewrite - lots of improvements for easier development. Rewrite includes:
+    - common code file, for better code readability and ease of development,
+    - new parser, allowing for better expandability and faster data processing (and much simpler implementation, unlike the hellspawn that was the previous `getFromToneAPI` function),
+    - new request function, more compact and simple than previous iterations,
+    - other functions that simplify the code and make it easier to read / develop
+</details>
