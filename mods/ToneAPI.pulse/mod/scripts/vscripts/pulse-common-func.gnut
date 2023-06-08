@@ -36,7 +36,7 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
     }
     foreach (key, value in parameterTable)
     {
-        requestTable[string(key)] <- [expect string(parameterTable[string(key)])]
+        requestTable[string(key)] <- [string(value)]
     }
     return NSHttpGet(givenURL, requestTable, onSuccess, onFailure)
 }
