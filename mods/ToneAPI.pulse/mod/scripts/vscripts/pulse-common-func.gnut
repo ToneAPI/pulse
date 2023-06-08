@@ -3,6 +3,7 @@ globalize_all_functions
 
 
 global string pulsePrefix
+table withMapName = {}
 void function pulsePrefixSet() //Sets our prefix
 {
     pulsePrefix = format("\x1b[38;2;%i;%i;%im[PULSE]\x1b[0m", 255, 178, 102)
@@ -23,7 +24,6 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
         if ("map" in parameterTable)
         {
             string mapName = expect string(parameterTable["map"])
-            table withMapName = {}
             withMapName[mapName] <- DecodedJSON
             pulseData[tablepath] <- withMapName
         } else {
@@ -37,6 +37,8 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
     foreach (key, value in parameterTable)
     {
         requestTable[string(key)] <- [string(value)]
+        pulsePrintt(string(key))
+        pulsePrintt(string(value))
     }
     return NSHttpGet(givenURL, requestTable, onSuccess, onFailure)
 }
