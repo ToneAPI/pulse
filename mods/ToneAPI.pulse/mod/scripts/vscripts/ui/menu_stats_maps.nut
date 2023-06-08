@@ -198,8 +198,6 @@ void function UpdateStatsForMap( string mapName )
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
 			}
-		} else {
-			pulsePrintt("No " + mapName.slice(3) + " in pulseData")
 		}
 	}
 	foreach (string key, array<int> value in customGamemodeList)
