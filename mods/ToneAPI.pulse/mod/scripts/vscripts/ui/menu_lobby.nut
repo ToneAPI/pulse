@@ -548,7 +548,7 @@ void function OnLobbyMenu_Open()
 
 	// code will start loading DLC info from first party unless already done
 	InitDLCStore()
-	pulseGetData()
+	waitthread pulseGetData()
 
 	thread UpdateCachedNewItems()
 	if ( file.putPlayerInMatchmakingAfterDelay )
