@@ -1,6 +1,6 @@
 {
     "name": "Pulse",
-    "description": "Pulse is a clientside mod for Titanfall 2 letting you view killstats collected by the Tone API using the otherwise non-functional Stats tab.",
+    "description": "Adds stats (collected by the Tone API) back to the Stats tab.",
     "version_number": "2.0.0",
     "website_url": "https://github.com/ToneAPI/pulse",
     "dependencies": []
