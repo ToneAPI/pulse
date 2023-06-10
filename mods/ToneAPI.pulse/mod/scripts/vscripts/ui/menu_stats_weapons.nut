@@ -180,8 +180,8 @@ void function UpdateStatsForWeapon( string weaponRef )
 	}
 
 	// Total Kills Stats
-	SetStatsLabelValue( file.menu, "KillsValue0", 				getFromToneAPI(weaponRef, "weaponsLocal", "kills") ) //Total kills
-	SetStatsLabelValue( file.menu, "KillsValue1", 				getFromToneAPI(weaponRef, "weaponsLocal", "kills") ) //Pilots
+	SetStatsLabelValue( file.menu, "KillsValue0", 				pulseParse("weaponsLocal", weaponRef, "kills") ) //Total kills
+	SetStatsLabelValue( file.menu, "KillsValue1", 				pulseParse("weaponsLocal", weaponRef, "kills") ) //Pilots
 	SetStatsLabelValue( file.menu, "KillsValue2", 				GetPlayerStatInt( player, "weapon_kill_stats", "titansTotal", weaponRef ) ) //Titans
-	SetStatsLabelValue( file.menu, "KillsValue3", 				getFromToneAPI(weaponRef, "weaponsLocal", "deaths_while_equipped")) // Deaths with weapon
+	SetStatsLabelValue( file.menu, "KillsValue3", 				pulseParse("weaponsLocal", weaponRef, "deaths_while_equipped")) // Deaths with weapon
 }

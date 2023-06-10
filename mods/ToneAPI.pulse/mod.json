@@ -1,7 +1,7 @@
 {
     "Name": "ToneAPI.pulse",
     "Description": "Displays Tone API kill data in the Stats tab.",
-    "Version": "1.2.2",
+    "Version": "2.0.0",
     "LoadPriority": 1,
     "ConVars": [
         {
@@ -11,27 +11,19 @@
         {
             "Name": "VersionURL",
             "DefaultValue": "https://raw.githubusercontent.com/ToneAPI/pulse/main/version.json"
-        },
-        {
-            "Name": "MajorVersion",
-            "DefaultValue": "1"
-        },
-        {
-            "Name": "MinorVersion",
-            "DefaultValue": "2"
-        },
-        {
-            "Name": "PatchVersion",
-            "DefaultValue": "2"
         }
     ],
     "Scripts": [
         {
-        "Path": "pulse.gnut",
-        "RunOn": "UI",
-        "UICallback": {
-            "After": "pulseInit"
-        }
+            "Path":"pulse-common-func.gnut",
+            "RunOn":"UI"
+        },
+        {
+            "Path": "pulse.gnut",
+            "RunOn": "UI",
+            "UICallback": {
+                "After": "pulseInit"
+            }
         }
     ]
 }
