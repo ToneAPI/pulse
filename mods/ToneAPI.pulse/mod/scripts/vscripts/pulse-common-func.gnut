@@ -17,7 +17,6 @@ void function pulsePrintt(string content) //Prints whatever we want printed with
 bool function pulseRequestData(string givenURL, table parameterTable, string tablepath) //Gets data from API (see ToneURL within mod.json) and puts it into one table for processing.
 {
     table<string, array<string> > requestTable
-    pulsePrintt(tablepath)
     void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (parameterTable, requestTable, tablepath)
     {
         table DecodedJSON = DecodeJSON(response.body)
