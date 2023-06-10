@@ -1,6 +1,6 @@
-# Pulse
+# pulse
 
-Pulse is a clientside mod for [TF|2 + Northstar](https://github.com/R2Northstar/Northstar) letting you view killstats collected by [the Tone API](https://toneapi.github.io/ToneAPI_webclient/) using the otherwise non-functional `Stats` tab.
+**pulse** is a clientside mod for [TF|2 + Northstar](https://github.com/R2Northstar/Northstar) letting you view killstats collected by [the Tone API](https://toneapi.github.io/ToneAPI_webclient/) using the otherwise non-functional `Stats` tab.
 
 ## Currently, features include:
 - mostly functional `Overview` tab,
@@ -76,8 +76,7 @@ Found a bug? Make an issue on GitHub [here.](https://github.com/ToneAPI/pulse/is
 ## DISCLAIMER
 
 The Tone API is NOT used by every server, view a list of supported servers [here.](https://tone.sleepycat.date/v2/client/servers)
-
-Pulse is very much a W.I.P as of right now, features may be missing/nonfunctional.
+**pulse** is very much a W.I.P as of right now, features may be missing/nonfunctional.
 
 ## CHANGELOG
 
