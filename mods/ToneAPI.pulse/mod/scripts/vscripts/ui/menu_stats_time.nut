@@ -103,7 +103,7 @@ void function UpdateViewStatsTimeMenu()
 	PieChartData classTimeData
 	classTimeData.entries = classes
 	classTimeData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ClassPieChart", "KILLS BY CLASS", classTimeData )
+	SetPieChartData( file.menu, "ClassPieChart", Localize("#TIME_KILLS_CLASS"), classTimeData )
 
 	//#########################################
 	// 		 Time By Chassis Pie Chart
@@ -137,7 +137,7 @@ void function UpdateViewStatsTimeMenu()
 	PieChartData chassisTimeData
 	chassisTimeData.entries = titans
 	chassisTimeData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ChassisPieChart", "KILLS BY TITAN", chassisTimeData )
+	SetPieChartData( file.menu, "ChassisPieChart", Localize("#TIME_KILLS_TITAN"), chassisTimeData )
 
 	//#########################################
 	// 		  Time By Mode Pie Chart
@@ -153,9 +153,9 @@ void function UpdateViewStatsTimeMenu()
 		gg = [14, 87, 132, 255]
 	}
 	table< string, string > customGamemodeNames = {
-		sns = "Sticks and Stones"
-		fw = "Frontier War"
-		gg = "Gun Game"
+		sns = Localize("#GAMEMODE_sns")
+		fw = Localize("#GAMEMODE_fw")
+		gg = Localize("#GAMEMODE_gg")
 	}
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
@@ -184,7 +184,7 @@ void function UpdateViewStatsTimeMenu()
 	PieChartData modesPlayedData
 	modesPlayedData.entries = modes
 	modesPlayedData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ModesPieChart", "KILLS BY GAMEMODE", modesPlayedData )
+	SetPieChartData( file.menu, "ModesPieChart", Localize("#KILLS_GAMEMODE"), modesPlayedData )
 
 	//#########################################
 	// 				Time Stats

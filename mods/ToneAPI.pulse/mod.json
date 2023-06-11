@@ -25,5 +25,8 @@
                 "After": "pulseInit"
             }
         }
+    ],
+    "Localisation": [
+        "resource/pulse_%language%.txt"
     ]
 }

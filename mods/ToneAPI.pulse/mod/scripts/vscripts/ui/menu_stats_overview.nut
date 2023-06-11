@@ -218,7 +218,7 @@ function UpdateViewStatsOverviewMenu()
 		Hud_Show( weaponImageElem )
 		Hud_SetText( weaponNameElem, nemesisWeapon.printName )
 		Hud_Show( weaponNameElem )
-		Hud_SetText( weaponDescElem, nemesisWeapon.val + " DEATHS BY WEAPON" )
+		Hud_SetText( weaponDescElem, nemesisWeapon.val + " " + Localize("#NEMESIS_WEAPON_VALUE"))
 		Hud_Show( weaponDescElem )
 		Hud_Hide( noDataElem )
 	}

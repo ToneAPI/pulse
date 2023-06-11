@@ -152,16 +152,16 @@ void function UpdateStatsForMap( string mapName )
 	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat2" ), Localize( "#STATS_GAMES_PLAYED" ), 				gamesPlayed )
 	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat3" ), Localize( "#STATS_GAMES_PLAYED" ), 				gamesPlayed )
 
-	SetStatsLabelValue( file.menu, "KillsLabel0", 				"KILLS ON MAP" )
+	SetStatsLabelValue( file.menu, "KillsLabel0", 				Localize("#MAPS_KILLS") )
 	SetStatsLabelValue( file.menu, "KillsValue0", 				pulseParse("maps", mapName.slice(3), "kills") )
 
-	SetStatsLabelValue( file.menu, "KillsLabel1", 				"DEATHS ON MAP" )
+	SetStatsLabelValue( file.menu, "KillsLabel1", 				Localize("#MAPS_DEATHS") )
 	SetStatsLabelValue( file.menu, "KillsValue1", 				pulseParse("maps", mapName.slice(3), "deaths") )
 
-	SetStatsLabelValue( file.menu, "KillsLabel2", 				"TOTAL SHOT DISTANCE" )
+	SetStatsLabelValue( file.menu, "KillsLabel2", 				Localize("#MAPS_TSD") )
 	SetStatsLabelValue( file.menu, "KillsValue2", 				string(int((1.905 * float(pulseParse("maps", mapName.slice(3), "total_distance") ) ) )/100) + "m" )
 
-	SetStatsLabelValue( file.menu, "KillsLabel3", 				"MAXIMUM SHOT DISTANCE" )
+	SetStatsLabelValue( file.menu, "KillsLabel3", 				Localize("#MAPS_MSD") )
 	SetStatsLabelValue( file.menu, "KillsValue3", 				string(int((1.905 * float(pulseParse("maps", mapName.slice(3), "max_distance") ) ) )/100) + "m" )
 
 	SetStatsLabelValue( file.menu, "KillsLabel4", 				"--" )
@@ -184,9 +184,9 @@ void function UpdateStatsForMap( string mapName )
 		gg = [14, 87, 132, 255]
 	}
 	table< string, string > customGamemodeNames = {
-		sns = "Sticks and Stones"
-		fw = "Frontier War"
-		gg = "Gun Game"
+		sns = Localize("#GAMEMODE_sns")
+		fw = Localize("#GAMEMODE_fw")
+		gg = Localize("#GAMEMODE_gg")
 	}
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
@@ -231,7 +231,7 @@ void function UpdateStatsForMap( string mapName )
 	PieChartData modesPlayedData
 	modesPlayedData.entries = modes
 	modesPlayedData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ModesPieChart", "KILLS BY GAMEMODE", modesPlayedData )
+	SetPieChartData( file.menu, "ModesPieChart", "#KILLS_GAMEMODE", modesPlayedData )
 
 	array<string> fdMaps = GetPlaylistMaps( "fd" )
 
