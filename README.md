@@ -89,4 +89,10 @@ The Tone API is NOT used by every server, view a list of supported servers [here
     - new parser, allowing for better expandability and faster data processing (and much simpler implementation, unlike the hellspawn that was the previous `getFromToneAPI` function),
     - new request function, more compact and simple than previous iterations,
     - other functions that simplify the code and make it easier to read / develop
+  - Localisation, currently available in:
+    - English,
+    - French,
+    - German,
+    - Italian,
+    - Polish. (Northstar isn't translated into Polish, but the game supports it.)
 </details>
