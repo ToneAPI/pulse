@@ -540,13 +540,21 @@ void function Lobby_RefreshButtons()
 	}
 }
 
+void function GetStats()
+{
+	Hud_SetLocked(file.statsButton, pulseSuccessBool)
+	waitthread pulseGetData()
+	wait 0.5 //temporary
+	Hud_SetLocked(file.statsButton, pulseSuccessBool)
+}
+
 void function OnLobbyMenu_Open()
 {
 	Assert( IsConnected() )
 
 	// code will start loading DLC info from first party unless already done
 	InitDLCStore()
-	waitthread pulseGetData()
+	thread GetStats()
 
 	thread UpdateCachedNewItems()
 	if ( file.putPlayerInMatchmakingAfterDelay )
