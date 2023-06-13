@@ -95,4 +95,5 @@ The Tone API is NOT used by every server, view a list of supported servers [here
     - German,
     - Italian,
     - Polish. (Northstar isn't translated into Polish, but the game supports it.)
+  - Locking the Stats tab, avoiding situations where you could click too fast and see no stats. Also prevents the game from showing stats when the API is unreachable.
 </details>
