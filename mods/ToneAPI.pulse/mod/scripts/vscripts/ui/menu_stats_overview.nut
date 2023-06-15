@@ -32,7 +32,7 @@ void function InitViewStatsOverviewMenu()
 	AddMenuFooterOption( menu, BUTTON_B, "#B_BUTTON_BACK", "#BACK" )
 }
 
-void function GetTitanKills( string titanName )
+void function GetTitanKills()
 {
 	file.allTitans = GetVisibleItemsOfType( eItemTypes.TITAN )
 	var dataTable = GetDataTable( $"datatable/titan_properties.rpak" )
@@ -50,9 +50,12 @@ void function GetTitanKills( string titanName )
 		file.titanStatLoadout[ titan.ref ].append( GetDataTableString( dataTable, row, GetDataTableColumnByName( dataTable, "melee" ) ) )
 	}
 
-	foreach ( weaponRef in file.titanStatLoadout[ titanName ])
+	foreach ( titan in file.allTitans)
 	{
-		titanKillData[weaponRef] <- pulseParse("weaponsLocal", weaponRef, "kills")
+		foreach ( weaponRef in file.titanStatLoadout[ titan.ref ])
+		{
+			titanKillData[weaponRef] <- pulseParse("weaponsLocal", weaponRef, "kills")
+		}
 	}
 }
 
@@ -68,15 +71,7 @@ void function GetAllPilotWeapons()
 void function OnStatsOverview_Open()
 {
 	UI_SetPresentationType( ePresentationType.NO_MODELS )
-
-	GetTitanKills("ion")
-	GetTitanKills("scorch")
-	GetTitanKills("northstar")
-	GetTitanKills("ronin")
-	GetTitanKills("tone")
-	GetTitanKills("legion")
-	GetTitanKills("vanguard")
-
+	GetTitanKills()
 	UpdateViewStatsOverviewMenu()
 }
 
@@ -301,45 +296,32 @@ function UpdateViewStatsOverviewMenu()
 	// Lifetime
 	table playerweaponData = expect table(pulseData["weaponsLocal"])
 	table globalweaponData = expect table(pulseData["weaponsGlobal"])
+
+
 	var totalPilotKills = 0
-
-	foreach (var key, var value in playerweaponData) {
-		table values = expect table(value)
-		totalPilotKills += values["kills"]
-	}
-
-	var totalGlobalKills = 0
-	foreach (var key, var value in globalweaponData) {
-		table values = expect table(value)
-		totalGlobalKills += values["kills"]
-	}
-
 	var totalPilotDeaths = 0
 	foreach (var key, var value in playerweaponData) {
 		table values = expect table(value)
+		totalPilotKills += values["kills"]
 		totalPilotDeaths += values["deaths"]
 	}
 
+	var totalGlobalKills = 0
 	var totalGlobalDeaths = 0
 	foreach (var key, var value in globalweaponData) {
 		table values = expect table(value)
+		totalGlobalKills += values["kills"]
 		totalGlobalDeaths += values["deaths"]
 	}
 
 
+	var killsAsTitan = 0
 	var killsAsPilot = 0
 	foreach (var key, var value in playerweaponData) {
 		if (key in titanKillData) {
-			continue
+			killsAsTitan += titanKillData[string(key)]
 		} else {
 			killsAsPilot += pulseParse("weaponsLocal", string(key), "kills")
-		}
-	}
-
-	var killsAsTitan = 0
-	foreach (var key, var value in playerweaponData) {
-		if (key in titanKillData) {
-			killsAsTitan += titanKillData[string(key)]
 		}
 	}
 
