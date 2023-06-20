@@ -389,7 +389,7 @@ function UpdateViewStatsOverviewMenu()
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue0" ), string( killsAsPilot ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue1" ), string( GetPlayerStatInt( player, "kills_stats", "titanKillsAsPilot" ) ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue2" ), string( GetPlayerStatInt( player, "kills_stats", "totalNPC" ) ) )
-	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue3" ), string( pulseParse("weaponsLocal", "pilot_emptyhanded", "kills") ) )
+	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue3" ), string( pulseParse("weaponsLocal", "pilot_emptyhanded", "kills") + pulseParse("weaponsLocal", "melee_pilot_kunai", "kills") ) )
 	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue4" ), string( pulseParse("weaponsLocal", "human_execution", "kills") ) )
 //	Hud_SetText( GetElem( file.menu, "KillsAsPilotValue5" ), string( GetPlayerStatInt( player, "kills_stats", "titanFallKill" ) ) )
 
