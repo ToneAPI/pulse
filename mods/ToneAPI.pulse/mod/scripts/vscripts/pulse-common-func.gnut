@@ -20,7 +20,8 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
     table<string, array<string> > requestTable
     void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (givenURL, parameterTable, requestTable, tablepath)
     {
-        if (NSIsSuccessHttpCode(response.statusCode)){
+        if (NSIsSuccessHttpCode(response.statusCode))
+        {
             table DecodedJSON = DecodeJSON(response.body)
             if ("map" in parameterTable)
             {
@@ -56,7 +57,7 @@ int function pulseParse(...) //Returns data from our pulseData table.
         if (i < expect int(vargc) - 1) {
             if (expect string (vargv[i]) in parser) {
                 parser = expect table(parser[expect string(vargv[i])])
-            } else {break}
+            } else break
         } else {
             result = expect int(parser[expect string(vargv[i])])
         }
