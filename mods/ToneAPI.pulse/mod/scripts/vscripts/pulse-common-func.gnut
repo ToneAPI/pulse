@@ -20,7 +20,7 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
     table<string, array<string> > requestTable
     void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (givenURL, parameterTable, requestTable, tablepath)
     {
-        if(response.statusCode == 200 || response.statusCode == 201){
+        if (NSIsSuccessHttpCode(response.statusCode)){
             table DecodedJSON = DecodeJSON(response.body)
             if ("map" in parameterTable)
             {
