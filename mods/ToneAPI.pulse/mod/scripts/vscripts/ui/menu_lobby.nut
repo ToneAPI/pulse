@@ -542,10 +542,10 @@ void function Lobby_RefreshButtons()
 
 void function GetStats()
 {
-	Hud_SetLocked(file.statsButton, pulseSuccessBool)
+	Hud_SetLocked(file.statsButton, pulseFailure)
 	waitthread pulseGetData()
 	wait 0.5 //temporary
-	Hud_SetLocked(file.statsButton, pulseSuccessBool)
+	Hud_SetLocked(file.statsButton, pulseFailure)
 }
 
 void function OnLobbyMenu_Open()
