@@ -37,9 +37,9 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
             pulsePrintt(format("%s, %s is unreachable.", response.statusCode, givenURL))
         }
     }
-    void functionref (HttpRequestFailure) onFailure = void function(HttpRequestFailure failure)
+    void functionref (HttpRequestFailure) onFailure = void function(HttpRequestFailure failure) : (givenURL)
     {
-        pulsePrintt("Something went wrong while getting data.")
+        pulsePrintt(format("%s, %s is unreachable.", response.statusCode, givenURL))
         pulseSuccessBool = true
     }
     foreach (key, value in parameterTable)
