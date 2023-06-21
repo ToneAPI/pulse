@@ -159,13 +159,13 @@ void function UpdateStatsForMap( string mapName )
 	SetStatsLabelValue( file.menu, "KillsValue1", 				pulseParse("maps", mapName.slice(3), "deaths") )
 
 	SetStatsLabelValue( file.menu, "KillsLabel2", 				Localize("#MAPS_TSD") )
-	SetStatsLabelValue( file.menu, "KillsValue2", 				string(int((1.905 * float(pulseParse("maps", mapName.slice(3), "total_distance") ) ) )/100) + "m" )
+	SetStatsLabelValue( file.menu, "KillsValue2", 				HammerToMeterString(float(pulseParse("maps", mapName.slice(3), "total_distance"))))
 
 	SetStatsLabelValue( file.menu, "KillsLabel3", 				Localize("#MAPS_MSD") )
-	SetStatsLabelValue( file.menu, "KillsValue3", 				string(int((1.905 * float(pulseParse("maps", mapName.slice(3), "max_distance") ) ) )/100) + "m" )
+	SetStatsLabelValue( file.menu, "KillsValue3", 				HammerToMeterString(float(pulseParse("maps", mapName.slice(3), "max_distance"))))
 
-	SetStatsLabelValue( file.menu, "KillsLabel4", 				"--" )
-	SetStatsLabelValue( file.menu, "KillsValue4", 				"--" )
+	SetStatsLabelValue( file.menu, "KillsLabel4", 				Localize("#MAPS_ASD") )
+	SetStatsLabelValue( file.menu, "KillsValue4", 				HammerToMeterString(float(pulseParse("maps", mapName.slice(3), "max_distance")) / float(pulseParse("maps", mapName.slice(3), "kills"))))
 
 	//var anchorElem = Hud_GetChild( file.menu, "WeaponStatsBackground" )
 	//printt( Hud_GetX( anchorElem ) )

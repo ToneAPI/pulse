@@ -64,3 +64,8 @@ int function pulseParse(...) //Returns data from our pulseData table.
     }
     return result
 }
+
+string function HammerToMeterString(float value)
+{
+    return value > 0 && int((1.905 * value ))/100 > 0 ? string(int((1.905 * value ) )/100) + "m" : "0";
+}
