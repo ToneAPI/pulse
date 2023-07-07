@@ -31,7 +31,7 @@ Found a bug? Make an issue on GitHub [here.](https://github.com/ToneAPI/pulse/is
   | AI kills           |Non-functional, Tone API does not collect AI kill data.|
   | Pilot melee kills  |Shows only melee kills accumulated by player as Pilot.|
   | Pilot executions   |Shows only executions accumulated by player as Pilot.|
-  
+
 - Kills as Titan - shows general kill data for player as Titan, visualised in the table below:
 
   |        Name        | Description                                          |
@@ -73,16 +73,18 @@ Found a bug? Make an issue on GitHub [here.](https://github.com/ToneAPI/pulse/is
 - Kills by Gamemode - piechart showing all kills (in percent) on chosen map by gamemode.
 </details>
 
-## DISCLAIMER
+## DISCLAIMERS
 
 The Tone API is NOT used by every server, view a list of supported servers [here.](https://tone.sleepycat.date/v2/client/servers)
 **pulse** is very much a W.I.P as of right now, features may be missing/nonfunctional.
+
+As of v2.1.0, **pulse** requires [loeb](https://github.com/okvdai/loeb)
 
 ## CHANGELOG
 
 <details>
   <summary> pulse v2.0.0 "Demeter" </summary>
-  
+
   - Switched to Thunderstore template on the GitHub site for easier development.
   - General code rewrite - lots of improvements for easier development. Rewrite includes:
     - common code file, for better code readability and ease of development,
