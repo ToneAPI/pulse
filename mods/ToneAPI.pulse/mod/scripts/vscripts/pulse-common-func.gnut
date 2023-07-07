@@ -3,7 +3,6 @@ globalize_all_functions
 
 
 global string pulsePrefix
-global bool pulseFailure = true
 table withMapName = {}
 void function pulsePrefixSet() //Sets our prefix
 {
@@ -31,16 +30,13 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
             } else {
                 pulseData[tablepath] <- DecodedJSON
             }
-            pulseFailure = false
         } else {
-            pulseFailure = true
             pulsePrintt(format("%s, %s is unreachable.", response.statusCode, givenURL))
         }
     }
     void functionref (HttpRequestFailure) onFailure = void function(HttpRequestFailure failure) : (givenURL)
     {
         pulsePrintt(format("Something went wrong, %s is unreachable", givenURL))
-        pulseFailure = true
     }
     foreach (key, value in parameterTable)
     {
