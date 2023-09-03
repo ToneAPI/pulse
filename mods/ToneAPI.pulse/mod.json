@@ -6,11 +6,7 @@
     "ConVars": [
         {
             "Name": "ToneURL",
-            "DefaultValue": "https://tone.sleepycat.date/v2/client"
-        },
-        {
-            "Name": "VersionURL",
-            "DefaultValue": "https://raw.githubusercontent.com/ToneAPI/pulse/main/version.json"
+            "DefaultValue": "https://toneapi.ovh/v2/client"
         }
     ],
     "Scripts": [
