@@ -20,13 +20,6 @@
             "UICallback": {
                 "After": "pulseInit"
             }
-        },
-        {
-            "Path": "pulse-loeb-component.nut",
-            "RunOn": "UI",
-            "UICallback": {
-                "After": "pulseRegisterWithLoeb"
-            }
         }
     ],
     "Localisation": [

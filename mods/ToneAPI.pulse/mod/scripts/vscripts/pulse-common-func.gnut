@@ -32,11 +32,13 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
             }
         } else {
             pulsePrintt(format("%s, %s is unreachable.", response.statusCode, givenURL))
+            pulseLockStats()
         }
     }
     void functionref (HttpRequestFailure) onFailure = void function(HttpRequestFailure failure) : (givenURL)
     {
         pulsePrintt(format("Something went wrong, %s is unreachable", givenURL))
+        pulseLockStats()
     }
     foreach (key, value in parameterTable)
     {
@@ -59,6 +61,11 @@ int function pulseParse(...) //Returns data from our pulseData table.
         }
     }
     return result
+}
+
+void function pulseLockStats()
+{
+    loebSetLockedButton(Localize("#MENU_TITLE_STATS"), true)
 }
 
 string function HammerToMeterString(float value)
