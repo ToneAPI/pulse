@@ -12,7 +12,7 @@ void function pulseInit()
     pulsePrefixSet()
     file.allMaps = GetPrivateMatchMaps()
     pulsePrintt("Initialized.")
-    pulseGetData()
+    AddUICallback_OnLevelInit( pulseGetData )
 }
 
 void function pulseGetData()
