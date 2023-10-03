@@ -99,3 +99,11 @@ As of v2.1.0, **pulse** requires [loeb](https://github.com/okvdai/loeb)
     - Polish. (Northstar isn't translated into Polish, but the game supports it.)
   - Locking the Stats tab, avoiding situations where you could click too fast and see no stats. Also prevents the game from showing stats when the API is unreachable.
 </details>
+
+<details>
+  <summary> pulse v2.1.0  </summary>
+
+  - Changed endpoint
+  - Lots of bug fixes
+  - Uses new experimental loeb library
+</details>
