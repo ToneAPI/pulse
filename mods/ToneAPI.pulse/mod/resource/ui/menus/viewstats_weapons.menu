@@ -345,7 +345,7 @@ resource/ui/menus/viewstats_weapons.menu
 			tall						36
 			visible						1
 			font						Default_23
-			labelText					"DEATHS WITH WEAPON"
+			labelText					"#DEATHS_WHILE_EQUIPPED"
 			allcaps						1
 			textAlignment				west
 			fgcolor_override 			"255 255 255 255"

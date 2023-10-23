@@ -323,7 +323,7 @@ resource/ui/menus/viewstats_overview.menu
 			tall						45
 			visible						1
 			font						Default_31
-			labelText					"NEMESIS WEAPON"
+			labelText					"#NEMESIS_WEAPON"
 			allcaps						1
 			wrap						1
 			textAlignment				west

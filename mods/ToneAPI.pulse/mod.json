@@ -1,0 +1,28 @@
+{
+    "Name": "ToneAPI.pulse",
+    "Description": "Displays Tone API kill data in the Stats tab.",
+    "Version": "2.1.1",
+    "LoadPriority": 1,
+    "ConVars": [
+        {
+            "Name": "ToneURL",
+            "DefaultValue": "https://toneapi.ovh/v2/client"
+        }
+    ],
+    "Scripts": [
+        {
+            "Path":"pulse-common-func.gnut",
+            "RunOn":"UI"
+        },
+        {
+            "Path": "pulse.gnut",
+            "RunOn": "UI",
+            "UICallback": {
+                "After": "pulseInit"
+            }
+        }
+    ],
+    "Localisation": [
+        "resource/pulse_%language%.txt"
+    ]
+}

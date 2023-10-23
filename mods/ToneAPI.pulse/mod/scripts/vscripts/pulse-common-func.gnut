@@ -1,0 +1,74 @@
+globalize_all_functions
+
+
+
+global string pulsePrefix
+table withMapName = {}
+void function pulsePrefixSet() //Sets our prefix
+{
+    pulsePrefix = format("\x1b[38;2;%i;%i;%im[PULSE]\x1b[0m", 255, 178, 102)
+}
+
+void function pulsePrintt(string content) //Prints whatever we want printed with given prefix (by standard [PULSE]).
+{
+    printt(format("%s " + content, pulsePrefix))
+}
+
+bool function pulseRequestData(string givenURL, table parameterTable, string tablepath) //Gets data from API (see ToneURL within mod.json) and puts it into one table for processing.
+{
+    table<string, array<string> > requestTable
+    void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (givenURL, parameterTable, requestTable, tablepath)
+    {
+        if (NSIsSuccessHttpCode(response.statusCode))
+        {
+            table DecodedJSON = DecodeJSON(response.body)
+            if ("map" in parameterTable)
+            {
+                string mapName = expect string(parameterTable["map"])
+                withMapName[mapName] <- DecodedJSON
+                pulseData[tablepath] <- withMapName
+            } else {
+                pulseData[tablepath] <- DecodedJSON
+            }
+        } else {
+            pulsePrintt(format("%s, %s is unreachable.", response.statusCode, givenURL))
+            pulseLockStats()
+        }
+    }
+    void functionref (HttpRequestFailure) onFailure = void function(HttpRequestFailure failure) : (givenURL)
+    {
+        pulsePrintt(format("Something went wrong, %s is unreachable", givenURL))
+        pulseLockStats()
+    }
+    foreach (key, value in parameterTable)
+    {
+        requestTable[string(key)] <- [string(value)]
+    }
+    return NSHttpGet(givenURL, requestTable, onSuccess, onFailure)
+}
+
+int function pulseParse(...) //Returns data from our pulseData table.
+{
+    table parser = pulseData
+    int result = 0
+    for (int i; i < vargc; i++) {
+        if (i < expect int(vargc) - 1) {
+            if (expect string (vargv[i]) in parser) {
+                parser = expect table(parser[expect string(vargv[i])])
+            } else break
+        } else {
+            result = expect int(parser[expect string(vargv[i])])
+        }
+    }
+    return result
+}
+
+void function pulseLockStats()
+{
+    loebSetLockedButton(Localize("#MENU_TITLE_STATS"), true)
+}
+
+string function HammerToMeterString(float value)
+{
+    return value > 0 && int((1.905 * value ))/100 > 0 ? string(int((1.905 * value ) )/100) + "m" : "0";
+}

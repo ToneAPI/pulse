@@ -532,7 +532,7 @@ resource/ui/menus/viewstats_pve.menu
 			visible						1
 			font						Default_23
 			labelText					"--"
-			allcaps						1
+			allcaps						0
 			textAlignment				center
 			fgcolor_override 			"255 255 255 255"
 			//bgcolor_override 			"0 255 0 100"

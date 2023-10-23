@@ -1,0 +1,32 @@
+global function pulseInit
+global function pulseGetData
+
+global table pulseData = {}
+
+struct {
+    array<string> allMaps
+} file
+
+void function pulseInit()
+{
+    pulsePrefixSet()
+    file.allMaps = GetPrivateMatchMaps()
+    pulsePrintt("Initialized.")
+    AddUICallback_OnLevelInit( pulseGetData )
+}
+
+void function pulseGetData()
+{
+    print("data getter called")
+    string URL = GetConVarString("ToneURL")
+    array <string> URLpath = ["/weapons", "/weapons", "/gamemodes", "/gamemodes", "/maps"]
+    array <string> tablepath = ["weaponsLocal", "weaponsGlobal", "gamemodesAll", "gamemodesSeparated", "maps"]
+    pulseRequestData(URL + URLpath[0], {["player"] = NSGetLocalPlayerUID()}, tablepath[0])
+    pulseRequestData(URL + URLpath[1], {["player"] = "!" + NSGetLocalPlayerUID()}, tablepath[1])
+    pulseRequestData(URL + URLpath[2], {["player"] = NSGetLocalPlayerUID()}, tablepath[2])
+    foreach (map in file.allMaps)
+    {
+        pulseRequestData(URL + URLpath[3], {["player"] = NSGetLocalPlayerUID(), ["map"] = map.slice(3)}, tablepath[3])
+    }
+    pulseRequestData(URL + URLpath[4], {["player"] = NSGetLocalPlayerUID()}, tablepath[4])
+}

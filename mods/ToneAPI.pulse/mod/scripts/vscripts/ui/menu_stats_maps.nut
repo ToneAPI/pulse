@@ -140,8 +140,6 @@ void function UpdateStatsForMap( string mapName )
 
 	Hud_SetText( Hud_GetChild( file.menu, "WeaponName" ), GetMapDisplayName( mapName ) )
 
-	fetchGamemodeStatsFromToneAPI(mapName)
-
 	// Image
 	var imageElem = Hud_GetRui( Hud_GetChild( file.menu, "WeaponImageLarge" ) )
 	RuiSetImage( imageElem, "basicImage", GetMapImageForMapName( mapName ) )
@@ -154,20 +152,20 @@ void function UpdateStatsForMap( string mapName )
 	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat2" ), Localize( "#STATS_GAMES_PLAYED" ), 				gamesPlayed )
 	//SetStatBoxDisplay( Hud_GetChild( file.menu, "Stat3" ), Localize( "#STATS_GAMES_PLAYED" ), 				gamesPlayed )
 
-	SetStatsLabelValue( file.menu, "KillsLabel0", 				"KILLS ON MAP" )
-	SetStatsLabelValue( file.menu, "KillsValue0", 				getMapKillFromToneAPI(mapName) )
+	SetStatsLabelValue( file.menu, "KillsLabel0", 				Localize("#MAPS_KILLS") )
+	SetStatsLabelValue( file.menu, "KillsValue0", 				pulseParse("maps", mapName.slice(3), "kills") )
 
-	SetStatsLabelValue( file.menu, "KillsLabel1", 				"DEATHS ON MAP" )
-	SetStatsLabelValue( file.menu, "KillsValue1", 				getMapDeathFromToneAPI(mapName) )
+	SetStatsLabelValue( file.menu, "KillsLabel1", 				Localize("#MAPS_DEATHS") )
+	SetStatsLabelValue( file.menu, "KillsValue1", 				pulseParse("maps", mapName.slice(3), "deaths") )
 
-	SetStatsLabelValue( file.menu, "KillsLabel2", 				"TOTAL SHOT DISTANCE" )
-	SetStatsLabelValue( file.menu, "KillsValue2", 				string(int((1.905 * float(getMapDistFromToneAPI(mapName) ) ) )/100) + "m" )
+	SetStatsLabelValue( file.menu, "KillsLabel2", 				Localize("#MAPS_TSD") )
+	SetStatsLabelValue( file.menu, "KillsValue2", 				HammerToMeterString(float(pulseParse("maps", mapName.slice(3), "total_distance"))))
 
-	SetStatsLabelValue( file.menu, "KillsLabel3", 				"MAXIMUM SHOT DISTANCE" )
-	SetStatsLabelValue( file.menu, "KillsValue3", 				string(int((1.905 * float(getMapMDistFromToneAPI(mapName) ) ) )/100) + "m" )
+	SetStatsLabelValue( file.menu, "KillsLabel3", 				Localize("#MAPS_MSD") )
+	SetStatsLabelValue( file.menu, "KillsValue3", 				HammerToMeterString(float(pulseParse("maps", mapName.slice(3), "max_distance"))))
 
-	SetStatsLabelValue( file.menu, "KillsLabel4", 				"--" )
-	SetStatsLabelValue( file.menu, "KillsValue4", 				"--" )
+	SetStatsLabelValue( file.menu, "KillsLabel4", 				Localize("#MAPS_ASD") )
+	SetStatsLabelValue( file.menu, "KillsValue4", 				HammerToMeterString(float(pulseParse("maps", mapName.slice(3), "max_distance")) / float(pulseParse("maps", mapName.slice(3), "kills"))))
 
 	//var anchorElem = Hud_GetChild( file.menu, "WeaponStatsBackground" )
 	//printt( Hud_GetX( anchorElem ) )
@@ -185,13 +183,18 @@ void function UpdateStatsForMap( string mapName )
 		fw = [147, 204, 57, 255],
 		gg = [14, 87, 132, 255]
 	}
+	table< string, string > customGamemodeNames = {
+		sns = Localize("#GAMEMODE_sns")
+		fw = Localize("#GAMEMODE_fw")
+		gg = Localize("#GAMEMODE_gg")
+	}
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
 		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
-		if ( mapName in globalToneAPIGamemodeMapData && modeName in globalToneAPIGamemodeMapData[mapName] )
+		if (mapName.slice(3) in pulseData["gamemodesSeparated"])
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(globalToneAPIGamemodeMapData[mapName][modeName])
+			modePlayedTime = float(pulseParse("gamemodesSeparated", mapName.slice(3), modeName, "kills"))
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
 			}
@@ -199,12 +202,12 @@ void function UpdateStatsForMap( string mapName )
 	}
 	foreach (string key, array<int> value in customGamemodeList)
 	{
-		if ( mapName in globalToneAPIGamemodeMapData && key in globalToneAPIGamemodeMapData[mapName])
+		if (mapName.slice(3) in pulseData["gamemodesSeparated"])
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(globalToneAPIGamemodeMapData[mapName][key])
+			modePlayedTime = float(pulseParse("gamemodesSeparated", mapName.slice(3), key, "kills"))
 			if ( modePlayedTime > 0 ) {
-				AddPieChartEntry( modes, key, modePlayedTime, value)
+				AddPieChartEntry( modes, customGamemodeNames[key], modePlayedTime, value)
 			}
 		}
 	}
@@ -228,7 +231,7 @@ void function UpdateStatsForMap( string mapName )
 	PieChartData modesPlayedData
 	modesPlayedData.entries = modes
 	modesPlayedData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ModesPieChart", "KILLS BY GAMEMODE", modesPlayedData )
+	SetPieChartData( file.menu, "ModesPieChart", "#KILLS_GAMEMODE", modesPlayedData )
 
 	array<string> fdMaps = GetPlaylistMaps( "fd" )
 

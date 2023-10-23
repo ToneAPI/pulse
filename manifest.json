@@ -1,0 +1,7 @@
+{
+    "name": "Pulse",
+    "description": "Adds stats (collected by the Tone API) back to the Stats tab.",
+    "version_number": "2.1.1",
+    "website_url": "https://github.com/ToneAPI/pulse",
+    "dependencies": ["Okudai-loeb-1.0.1"]
+}

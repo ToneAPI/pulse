@@ -49,7 +49,7 @@ float function GetTitanKills( string titanName)
 	float weaponKills = 0
 	foreach ( weaponRef in file.titanStatLoadout[ titanName ])
 	{
-		weaponKills += float(getWeaponKillsFromToneAPI(weaponRef))
+		weaponKills += float(pulseParse("weaponsLocal", weaponRef, "kills"))
 	}
 	return weaponKills
 }
@@ -79,11 +79,13 @@ void function UpdateViewStatsTimeMenu()
 	//#########################################
 	// 		  Time By Class Pie Chart
 	//#########################################
-	
+
 	var totalPilotKills = 0
-	
-	foreach (var key, var value in globalToneAPIKillData) {
-		totalPilotKills += value
+	table playerweaponData = expect table(pulseData["weaponsLocal"])
+
+	foreach (var key, var value in playerweaponData) {
+		table values = expect table(value)
+		totalPilotKills += values["kills"]
 	}
 	float hoursAsPilot = float(totalPilotKills)
 	float hoursAsTitan = killsAsTitan
@@ -101,7 +103,7 @@ void function UpdateViewStatsTimeMenu()
 	PieChartData classTimeData
 	classTimeData.entries = classes
 	classTimeData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ClassPieChart", "KILLS BY CLASS", classTimeData )
+	SetPieChartData( file.menu, "ClassPieChart", Localize("#TIME_KILLS_CLASS"), classTimeData )
 
 	//#########################################
 	// 		 Time By Chassis Pie Chart
@@ -135,7 +137,7 @@ void function UpdateViewStatsTimeMenu()
 	PieChartData chassisTimeData
 	chassisTimeData.entries = titans
 	chassisTimeData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ChassisPieChart", "KILLS BY TITAN", chassisTimeData )
+	SetPieChartData( file.menu, "ChassisPieChart", Localize("#TIME_KILLS_TITAN"), chassisTimeData )
 
 	//#########################################
 	// 		  Time By Mode Pie Chart
@@ -150,13 +152,18 @@ void function UpdateViewStatsTimeMenu()
 		fw = [147, 204, 57, 255],
 		gg = [14, 87, 132, 255]
 	}
+	table< string, string > customGamemodeNames = {
+		sns = Localize("#GAMEMODE_sns")
+		fw = Localize("#GAMEMODE_fw")
+		gg = Localize("#GAMEMODE_gg")
+	}
 	for ( int modeId = 0; modeId < enumCount; modeId++ )
 	{
 		string modeName = PersistenceGetEnumItemNameForIndex( "gameModes", modeId )
-		if ( modeName in globalToneAPIGamemodeData )
+		if ( pulseParse("gamemodesAll", modeName, "kills") != 0 )
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(globalToneAPIGamemodeData[modeName])
+			modePlayedTime = float(pulseParse("gamemodesAll", modeName, "kills"))
 			if ( modePlayedTime > 0 ) {
 				AddPieChartEntry( modes, GameMode_GetName( modeName ), modePlayedTime, GetGameModeDisplayColor( modeName ) )
 			}
@@ -164,12 +171,12 @@ void function UpdateViewStatsTimeMenu()
 	}
 	foreach (string key, array<int> value in customGamemodeList)
 	{
-		if ( key in globalToneAPIGamemodeData)
+		if ( pulseParse("gamemodesAll", key, "kills") != 0 )
 		{
 			float modePlayedTime = 0
-			modePlayedTime = float(globalToneAPIGamemodeData[key])
+			modePlayedTime = float(pulseParse("gamemodesAll", key, "kills"))
 			if ( modePlayedTime > 0 ) {
-				AddPieChartEntry( modes, key, modePlayedTime, value)
+				AddPieChartEntry( modes, customGamemodeNames[key], modePlayedTime, value)
 			}
 		}
 	}
@@ -177,7 +184,7 @@ void function UpdateViewStatsTimeMenu()
 	PieChartData modesPlayedData
 	modesPlayedData.entries = modes
 	modesPlayedData.labelColor = [ 255, 255, 255, 255 ]
-	SetPieChartData( file.menu, "ModesPieChart", "KILLS BY GAMEMODE", modesPlayedData )
+	SetPieChartData( file.menu, "ModesPieChart", Localize("#KILLS_GAMEMODE"), modesPlayedData )
 
 	//#########################################
 	// 				Time Stats
