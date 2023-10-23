@@ -1,9 +1,25 @@
 globalize_all_functions
 
+global enum ePulseDataType
+{
+    WEAPON,
+    MAP,
+    GAMEMODE,
+}
 
+global struct pulseDataStruct
+{
+    ePulseDataType dataType,
+    string dataName,
+    bool global,
+    int kills,
+    int deaths,
+    int max_distance,
+    int total_distance,
+    int deaths_while_equipped
+}
 
 global string pulsePrefix
-table withMapName = {}
 void function pulsePrefixSet() //Sets our prefix
 {
     pulsePrefix = format("\x1b[38;2;%i;%i;%im[PULSE]\x1b[0m", 255, 178, 102)
@@ -17,18 +33,39 @@ void function pulsePrintt(string content) //Prints whatever we want printed with
 bool function pulseRequestData(string givenURL, table parameterTable, string tablepath) //Gets data from API (see ToneURL within mod.json) and puts it into one table for processing.
 {
     table<string, array<string> > requestTable
-    void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (givenURL, parameterTable, requestTable, tablepath)
+    ePulseDataType requestedDataType
+
+    if ("weapon" in parameterTable)
     {
-        if (NSIsSuccessHttpCode(response.statusCode))
+        requestedDataType = ePulseDataType.WEAPON
+    }
+    else if ("map" in parameterTable)
+    {
+        requestedDataType = ePulseDataType.MAP
+    }
+    else if ("gamemode" in parameterTable)
+    {
+        requestedDataType = ePulseDataType.GAMEMODE
+    }
+
+    void functionref (HttpRequestResponse) onSuccess = void function(HttpRequestResponse response) : (givenURL, parameterTable, requestTable, tablepath, requestedDataType)
+    {
+        if (NSIsSuccessHttpCode(respone.StatusCode))
         {
             table DecodedJSON = DecodeJSON(response.body)
-            if ("map" in parameterTable)
-            {
-                string mapName = expect string(parameterTable["map"])
-                withMapName[mapName] <- DecodedJSON
-                pulseData[tablepath] <- withMapName
-            } else {
-                pulseData[tablepath] <- DecodedJSON
+            foreach (var key in DecodedJSON) {
+                table dData = DecodedJSON[key]
+                pulseDataStruct data = {
+                    dataType = requestedDataType,
+                    dataName = string(key),
+                    global = tablepath.find("Global") != null ? true : false;
+                    int kills = "kills" in dData ? dData["kills"] : 0
+                    int deaths = "deaths" in dData ? dData["deaths"] : 0
+                    int max_distance = "max_distance" in dData ? dData["max_distance"] : 0
+                    int total_distance = "total_distance" in dData ? dData["total_distance"] : 0
+                    int deaths_while_equipped = "deaths_while_equipped" in dData ? dData["deaths_while_equipped"] : 0
+                }
+                pulseData.append(data)
             }
         } else {
             pulsePrintt(format("%s, %s is unreachable.", response.statusCode, givenURL))
@@ -45,22 +82,6 @@ bool function pulseRequestData(string givenURL, table parameterTable, string tab
         requestTable[string(key)] <- [string(value)]
     }
     return NSHttpGet(givenURL, requestTable, onSuccess, onFailure)
-}
-
-int function pulseParse(...) //Returns data from our pulseData table.
-{
-    table parser = pulseData
-    int result = 0
-    for (int i; i < vargc; i++) {
-        if (i < expect int(vargc) - 1) {
-            if (expect string (vargv[i]) in parser) {
-                parser = expect table(parser[expect string(vargv[i])])
-            } else break
-        } else {
-            result = expect int(parser[expect string(vargv[i])])
-        }
-    }
-    return result
 }
 
 void function pulseLockStats()

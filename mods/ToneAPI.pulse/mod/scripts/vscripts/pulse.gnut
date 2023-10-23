@@ -1,7 +1,7 @@
 global function pulseInit
 global function pulseGetData
 
-global table pulseData = {}
+global array<pulseDataStruct> pulseData = []
 
 struct {
     array<string> allMaps
