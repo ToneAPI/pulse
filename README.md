@@ -75,7 +75,7 @@ Found a bug? Make an issue on GitHub [here.](https://github.com/ToneAPI/pulse/is
 
 ## DISCLAIMERS
 
-The Tone API is NOT used by every server, view a list of supported servers [here.](https://tone.sleepycat.date/v2/client/servers)
+The Tone API is NOT used by every server, view a list of supported servers [here.](https://toneapi.ovh/v2/client/servers)
 **pulse** is very much a W.I.P as of right now, features may be missing/nonfunctional.
 
 As of v2.1.0, **pulse** requires [loeb](https://github.com/okvdai/loeb)
