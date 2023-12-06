@@ -1,3 +1,5 @@
+# SINCE 06.12.2023, PULSE IS **DEPRECATED** DUE TO THE CLOSING OF THE TONE API SERVICE. THANK YOU FOR USING THE MOD.
+
 # pulse
 
 **pulse** is a clientside mod for [TF|2 + Northstar](https://github.com/R2Northstar/Northstar) letting you view killstats collected by [the Tone API](https://toneapi.github.io/ToneAPI_webclient/) using the otherwise non-functional `Stats` tab.
